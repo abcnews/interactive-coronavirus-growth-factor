@@ -8,7 +8,19 @@
     "Simon Elvery <simon@elvery.net>"
   ],
   "aunty": {
-    "type": "react"
+    "type": "react",
+    "babel": {
+      "env": {
+        "test": {
+          "plugins": [
+            "@babel/plugin-transform-modules-commonjs"
+          ]
+        }
+      }
+    },
+    "serve": {
+      "https": false
+    }
   },
   "scripts": {
     "start": "aunty serve",
@@ -16,15 +28,22 @@
   },
   "devDependencies": {
     "@abcnews/aunty": "^10.9.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
+    "jest": "^25.2.7",
     "react-test-renderer": "^16.13.1"
   },
   "dependencies": {
     "d3-array": "^2.4.0",
     "d3-dsv": "^1.2.0",
+    "d3-path": "^1.0.9",
+    "d3-scale": "^3.2.1",
+    "d3-shape": "^1.3.7",
     "date-fns": "^2.11.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-sparklines": "^1.7.0",
-    "recharts": "^1.8.5"
+    "react-use-dimensions": "^1.2.1",
+    "recharts": "^1.8.5",
+    "uuid": "^7.0.3"
   }
 }
