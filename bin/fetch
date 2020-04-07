@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+wget https://www.abc.net.au/dat/news/interactives/covid19-data/hybrid-country-totals.json
+mv ./hybrid-country-totals.json ./public/data
