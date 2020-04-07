@@ -196,9 +196,13 @@ export default props => {
 
       <h1>Small multiples</h1>
       <div className={styles.charts}>
-        {Array.from(data).map(([jurisdiction, data]) => (
+        {Array.from(data).map(([jurisdiction, data], i) => (
           <div key={jurisdiction} style={{ margin: 10, width: 300 }}>
-            <SmallMultiples jurisdiction={jurisdiction} data={data} />
+            <SmallMultiples
+              jurisdiction={jurisdiction}
+              data={data}
+              primary={i === 0}
+            />
           </div>
         ))}
       </div>
