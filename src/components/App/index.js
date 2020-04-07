@@ -3,84 +3,29 @@ import styles from "./styles.scss";
 import worm from "./worm.svg";
 import { csvParse } from "d3-dsv";
 import { parse, format } from "date-fns";
-import { min, max, group, rollup, sum, ascending } from "d3-array";
+import { min, max, group, rollup, sum, ascending, pairs } from "d3-array";
+import { JurisdictionGrowthRate, JurisdictionGrowthFactor } from "../Charts";
+import { Embed } from "../Embed";
+import { SmallMultiples } from "../SmallMultiples";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from "recharts";
+  trimDsiData,
+  findMissingDays,
+  findMiscalculations,
+  groupByJurisdiction,
+  sanityChecks
+} from "../utils";
 
-const CustomTooltip = ({ active, payload, label }) => {
-  console.log("active, payload, label", active, payload, label);
-
-  return active ? (
-    <div className={styles.tooltipWrapper}>
-      <strong>{`${format(payload[0].payload.date, "MMMM d")}`}</strong>
-      <br />
-      {`${(payload[0].value * 100).toFixed(1)}%`}
-    </div>
-  ) : null;
-};
-
-const calcGrowths = (n, i, arr) => {
-  const one = arr[i - 1];
-  const three = arr[i - 3];
-  const five = arr[i - 5];
-
-  return {
-    ...n,
-    g1: one ? Math.pow(n.cumulative / one.cumulative, 1 / 1) - 1 : null,
-    g3: three ? Math.pow(n.cumulative / three.cumulative, 1 / 3) - 1 : null,
-    g5: five ? Math.pow(n.cumulative / five.cumulative, 1 / 5) - 1 : null,
-    gf1: one ? n.added / one.added : null
-  };
-};
-
-const addGrowths = groups => {
-  const keys = Array.from(groups.keys());
-  const mod = new Map();
-  keys.forEach(key => {
-    const data = groups.get(key);
-    mod.set(key, data.map(calcGrowths));
-  });
-  return mod;
-};
-
-const findMissingDays = d => {
-  const minDay = min(d, d => d.timestamp);
-  const maxDay = max(d, d => d.timestamp);
-  const missing = [];
-
-  for (var day = minDay; day <= maxDay; day += 3600 * 24 * 1000) {
-    if (!d.filter(d => d.timestamp === day)) {
-      missing.push(day);
-    }
-  }
-
-  return missing;
-};
-
-const findMiscalculations = d => {
-  const miscalculations = [];
-  for (var i = 1; i < d.length; i++) {
-    if (d[i - 1].cumulative + d[i].added !== d[i].cumulative) {
-      miscalculations.push(d[i].date);
-    }
-  }
-  return miscalculations;
-};
-
-// Trim the most recent day if it doesn't have figures for all jurisdictions.
-const trimData = data => {
-  const maxDay = max(data, d => d.timestamp);
-  return data.filter(d => d.timestamp === maxDay).length < 8
-    ? data.filter(d => d.timestamp !== maxDay)
-    : data;
-};
+const jurisdictionsOfInterest = [
+  "Australia",
+  "China",
+  "US",
+  "United Kingdom",
+  "Denmark",
+  "Sweden",
+  "Spain",
+  "Japan",
+  "Korea, South"
+];
 
 const addNationalData = data => {
   return data.concat(
@@ -100,9 +45,36 @@ const addNationalData = data => {
   );
 };
 
-const groupByJurisdiction = data => group(data, d => d.jurisdiction);
+const parseHybridData = data => {
+  return Object.entries(data)
+    .reduce((acc, [jurisdiction, values]) => {
+      if (jurisdictionsOfInterest.indexOf(jurisdiction) === -1) return acc;
+      const objs = Object.entries(values).map(([dateString, cumulative]) => {
+        const date = parse(dateString, "yyyy-MM-dd", new Date());
+        return { date, timestamp: date.getTime(), jurisdiction, cumulative };
+      });
+      return acc.concat(objs);
+    }, [])
+    .sort((a, b) => ascending(a.timestamp, b.timestamp));
+};
 
-const parseData = data => {
+const calcNewCases = (d, i, arr) => ({
+  ...d,
+  added: i === 0 ? d.cumulative : d.cumulative - arr[i - 1].cumulative
+});
+
+const calculateNewCases = groups => {
+  console.log("groups", groups);
+  const keys = Array.from(groups.keys());
+  const mod = new Map();
+  keys.forEach(key => {
+    const data = groups.get(key);
+    mod.set(key, data.map(calcNewCases));
+  });
+  return mod;
+};
+
+const parseDsiData = data => {
   return data
     .map(d => {
       const date = parse(d["Date announced"], "dd/MM/yyyy", new Date());
@@ -116,59 +88,44 @@ const parseData = data => {
     })
     .filter(d => d.cumulative > 0)
     .sort((a, b) => ascending(a.timestamp, b.timestamp));
-
-  // Group and calculate growth rates
-  // const grouped = group(
-  //   [...parsed, ...national].map(d =>
-  //     Object.assign(d, { growth: d.added / (d.cumulative - d.added) })
-  //   ),
-  //   d => d.jurisdiction
-  // ).forEach(g => value.map(calcGrowths)]);
-  //
-  // console.log(findMissingDays(grouped.filter(d => d[0] === "NSW")[0][1]));
 };
 
 export default props => {
   const [data, setData] = useState(null);
   const [jurisdiction, setJurisdication] = useState("National");
-  const selection = jurisdiction && data ? data.get(jurisdiction) : null;
+  const [smoothingPeriod, setSmoothingPeriod] = useState(
+    localStorage["smoothingPeriod"] || 1
+  );
+  const selectedJurisdiction =
+    jurisdiction && data ? data.get(jurisdiction) : null;
+
   // Load data
+
+  useEffect(() => {
+    fetch("/data/hybrid-country-totals.json")
+      .then(res => res.json())
+      .then(parseHybridData)
+      .then(groupByJurisdiction)
+      .then(calculateNewCases)
+      .then(setData);
+  }, []);
+
+  // Can't use this direct until we fill in missing dates.
   useEffect(() => {
     fetch(
       "https://covid-sheets-mirror.web.app/api?sheet=1nUUU5zPRPlhAXM_-8R7lsMnAkK4jaebvIL5agAaKoXk&range=Daily%20Count%20States!A:E"
     )
       .then(res => res.text())
       .then(csvParse)
-      .then(parseData)
-      .then(trimData)
+      .then(parseDsiData)
+      .then(trimDsiData)
       .then(addNationalData)
       .then(groupByJurisdiction)
-      .then(addGrowths)
-      .then(setData);
+      .then(sanityChecks);
+    // .then(console.log);
   }, []);
 
-  // Sanity check
-  if (data) {
-    console.log("data", data);
-    Array.from(data).forEach(([jurisdiction, data]) => {
-      const missing = findMissingDays(data);
-      if (missing.length > 0) {
-        console.error(
-          `Missing days for ${jurisdiction}: ${missing.join(", ")}`
-        );
-      }
-
-      const miscalculations = findMiscalculations(data);
-      if (miscalculations.length > 0) {
-        console.error(
-          `Miscalculations for ${jurisdiction} on the following days: ${miscalculations.join(
-            ", "
-          )}`
-        );
-      }
-    });
-  }
-  console.log("selection", selection);
+  console.log("data", data);
 
   const tabs = data ? (
     <ul className={styles.tabs}>
@@ -184,38 +141,67 @@ export default props => {
     </ul>
   ) : null;
 
-  const averagingPeriod = "g5";
+  const smoothingPeriodSelector = (
+    <>
+      <label htmlFor="smoothingPeriod">
+        Smoothing period
+        <input
+          id="smoothingPeriod"
+          type="range"
+          value={smoothingPeriod}
+          min={1}
+          max={30}
+          onChange={ev => {
+            setSmoothingPeriod(ev.target.value);
+            localStorage["smoothingPeriod"] = ev.target.value;
+          }}
+        />
+      </label>
+      <p>{smoothingPeriod}</p>
+    </>
+  );
 
-  return selection ? (
+  const old = data ? (
     <div className={styles.root}>
-      <p className={styles.label}>Daily growth rate</p>
-      <h1>
-        {(selection[selection.length - 1][averagingPeriod] * 100).toFixed(1)}%
-      </h1>
-      <LineChart
-        width={200}
-        height={80}
-        data={data.get(jurisdiction).filter(d => !!d[averagingPeriod])}
-      >
-        <Line
-          type="monotone"
-          dataKey={averagingPeriod}
-          stroke="#8884d8"
-          strokeWidth={1}
-          dot={false}
-        />
-        <YAxis
-          allowDataOverflow={true}
-          tick={{ fontSize: "0.8rem" }}
-          tickFormatter={d => `${(d * 100).toFixed(0)}%`}
-          domain={[0, 0.3]}
-          width={30}
-          orientation="right"
-        />
+      {smoothingPeriodSelector}
+      {[
+        { title: "Daily growth rate", Component: JurisdictionGrowthRate },
+        { title: "Daily growth factor", Component: JurisdictionGrowthFactor }
+      ].map(({ title, Component }) => (
+        <div key={title}>
+          <h1>{title}</h1>
+          <div className={styles.charts}>
+            {Array.from(data).map(([jurisdiction, data]) => (
+              <Component
+                key={jurisdiction}
+                name={jurisdiction}
+                smoothing={smoothingPeriod}
+                data={data}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
 
-        <Tooltip content={<CustomTooltip />} />
-      </LineChart>
       <img className={styles.worm} src={worm} />
     </div>
+  ) : null;
+
+  return data ? (
+    <>
+      <h1>Embed</h1>
+      <div style={{ margin: 10, maxWidth: 340 }}>
+        <Embed jurisdiction="Australia" data={data.get("Australia")} />
+      </div>
+
+      <h1>Small multiples</h1>
+      <div className={styles.charts}>
+        {Array.from(data).map(([jurisdiction, data]) => (
+          <div key={jurisdiction} style={{ margin: 10, width: 300 }}>
+            <SmallMultiples jurisdiction={jurisdiction} data={data} />
+          </div>
+        ))}
+      </div>
+    </>
   ) : null;
 };

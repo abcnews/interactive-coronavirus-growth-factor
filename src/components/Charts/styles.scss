@@ -1,0 +1,56 @@
+.current-value {
+  margin: 0;
+  font-size: 4rem;
+}
+
+.label {
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  margin: 0.2rem 0;
+  position: relative;
+  top: 0.8rem;
+  font-weight: bold;
+}
+
+.chart {
+  margin: 2rem;
+  text-align: center;
+}
+
+.embed-chart {
+  display: flex;
+}
+
+.svg {
+  bottom: 0;
+  position: absolute;
+  left: 0;
+}
+.tick {
+  stroke: #a5b3b6;
+  stroke-width: 1;
+}
+
+.tickLabel {
+  font-size: 0.6rem;
+  color: #5c6c70;
+  position: absolute;
+  bottom: -1.3em;
+  text-align: center;
+}
+
+.tooltip {
+  font-size: 0.6rem;
+  color: #000;
+  position: absolute;
+  text-align: center;
+  span {
+    white-space: nowrap;
+    display: block;
+    background-color: #e9f7f7;
+    &:nth-child(2) {
+      font-family: ABCSerif;
+      font-weight: bold;
+    }
+  }
+}
