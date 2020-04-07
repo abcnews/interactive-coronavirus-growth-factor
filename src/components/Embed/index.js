@@ -21,7 +21,11 @@ export const Embed = ({ jurisdiction, data, smoothing = 5 }) => {
         exponential growth of COVID-19 cases
       </h1>
       <CurrentLabel labelText={labelText} value={currentGrowthFactor} />
-      <GrowthFactorChart data={series.slice(-30)} />
+      <GrowthFactorChart
+        data={series.slice(-30)}
+        height={200}
+        innerHeight={60}
+      />
       <Extremes data={series} className={styles.extremes} />
       <a className={styles.more} href="">
         Find out more

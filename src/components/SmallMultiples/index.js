@@ -24,7 +24,10 @@ export const SmallMultiples = ({ jurisdiction, data, smoothing = 5 }) => {
     <div className={styles.chart}>
       <h1 className={styles.title}>{jurisdictionName(jurisdiction)}</h1>
       <CurrentLabel labelText={labelText} value={currentGrowthFactor} />
-      <GrowthFactorChart data={series.slice(-30)} />
+      <GrowthFactorChart
+        data={series.slice(-30)}
+        innerHeightDomain={[0.7, 2]}
+      />
       <Extremes data={series} />
     </div>
   );

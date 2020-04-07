@@ -14,7 +14,12 @@ import { scaleLinear, scaleTime } from "d3-scale";
 import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
 
-export const GrowthFactorChart = ({ data }) => {
+export const GrowthFactorChart = ({
+  data,
+  height = 160,
+  innerHeight = 50,
+  innerHeightDomain
+}) => {
   const [ref, { x, y, width: chartWidth }] = useDimensions();
   const width = chartWidth - 30;
   const [svgRef, svgDimensions] = useDimensions();
@@ -23,21 +28,17 @@ export const GrowthFactorChart = ({ data }) => {
   const good = "#159f8c";
   const bad = "#cc365b";
   const currentColour = data[data.length - 1].growthFactor < 1 ? good : bad;
-  const height = 160;
-  const chartHeight = 50;
   const xDomain = extent(data, d => d.date);
   const xRange = [0, width];
-  const yDomain = [0.7, 1.5];
+  const yDomain = innerHeightDomain || [
+    Math.max(
+      0,
+      min(data, d => d.growthFactor)
+    ),
+    Math.max(data[data.length - 1].growthFactor, 1.5)
+  ];
 
-  // const yDomain = [
-  //   Math.max(
-  //     0,
-  //     min(data, d => d.growthFactor)
-  //   ),
-  //   Math.max(data[data.length - 1].growthFactor, 1.5)
-  // ];
-
-  const yRange = [height, height - chartHeight];
+  const yRange = [height, height - innerHeight];
 
   const xScale = scaleTime()
     .domain(xDomain)
@@ -64,7 +65,7 @@ export const GrowthFactorChart = ({ data }) => {
     <div
       ref={ref}
       style={{
-        height: chartHeight,
+        height: innerHeight,
         position: "relative",
         marginBottom: "1.1em",
         zIndex: highlight ? 4 : 1
@@ -144,7 +145,7 @@ export const GrowthFactorChart = ({ data }) => {
             y1={yScale(data[data.length - 1].growthFactor) - 7}
             y2={Math.min(
               yScale(data[data.length - 1].growthFactor) - 7,
-              height - chartHeight + 15
+              height - innerHeight + 15
             )}
             stroke={currentColour}
           />
