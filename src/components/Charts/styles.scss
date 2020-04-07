@@ -29,6 +29,7 @@
 
 .gap {
   stroke: #ccc;
+  stroke-width: 2;
   stroke-dasharray: 4 4;
 }
 
@@ -47,6 +48,7 @@
 
 .tooltip {
   font-size: 0.6rem;
+  pointer-events: none;
   color: #000;
   position: absolute;
   text-align: center;

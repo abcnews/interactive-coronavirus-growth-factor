@@ -80,6 +80,9 @@ export const growthFactor = (data, accessor = d => d) =>
     growthFactor: accessor(a) < 5 ? null : accessor(b) / accessor(a)
   }));
 
+export const growthFactorAccessor = d => d && d.growthFactor;
+export const growthFactorFormatter = d => (d ? d.toFixed(2) : "-");
+
 export const addGrowthFactor = (data, smoothing = 1) =>
   growthFactor(
     movingAverage(
@@ -126,4 +129,11 @@ export const sanityChecks = data => {
       );
     }
   });
+};
+
+export const jurisdictionName = name => {
+  const map = new Map();
+  map.set("Korea, South", "South Korea");
+  map.set("US", "United States");
+  return map.get(name) || name;
 };

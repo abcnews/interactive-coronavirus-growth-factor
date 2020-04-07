@@ -1,0 +1,40 @@
+.current {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  text-align: right;
+  justify-content: flex-end;
+  font-family: ABCSerif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  pointer-events: none;
+  margin: 0;
+  > span {
+    padding: 1px;
+    background-color: rgba(233, 247, 247, 0.75);
+    border-radius: 3px;
+  }
+  .key-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-left: 0.4rem;
+    line-height: 1;
+    position: relative;
+    top: -1px;
+  }
+}
+
+.key-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-left: 1rem;
+  line-height: 1;
+}
+
+.good {
+  color: var(--good);
+}
+
+.bad {
+  color: var(--bad);
+}

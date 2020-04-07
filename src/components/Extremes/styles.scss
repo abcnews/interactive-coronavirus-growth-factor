@@ -1,0 +1,35 @@
+.extremes {
+  font-size: 0.6875rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 1em;
+  color: #5c6c70;
+  dl {
+    margin: 0;
+    &:first-child {
+      margin-right: 1rem;
+    }
+  }
+  dt {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+  }
+  dd {
+    margin: 0;
+    padding: 0;
+    strong {
+      font-family: ABCSerif;
+      font-size: 0.9375rem;
+    }
+  }
+}
+
+.Lowest {
+  color: var(--good);
+}
+
+.Highest {
+  color: var(--bad);
+}

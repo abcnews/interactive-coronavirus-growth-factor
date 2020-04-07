@@ -43,7 +43,6 @@
     "react-dom": "^16.13.1",
     "react-sparklines": "^1.7.0",
     "react-use-dimensions": "^1.2.1",
-    "recharts": "^1.8.5",
     "uuid": "^7.0.3"
   }
 }

@@ -1,17 +1,13 @@
 import React, { useState, useMemo } from "react";
 import styles from "./styles.scss";
 import { GrowthRateTooltip, GrowthFactorTooltip } from "../Tooltips";
-import { movingAverage, growthRate, findGaps } from "../utils";
-import { pairs, extent, min, bisector } from "d3-array";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from "recharts";
+  movingAverage,
+  growthRate,
+  findGaps,
+  growthFactorFormatter
+} from "../utils";
+import { pairs, extent, min, bisector } from "d3-array";
 import useDimensions from "react-use-dimensions";
 import { line, curveMonotoneX } from "d3-shape";
 import { scaleLinear, scaleTime } from "d3-scale";
@@ -27,7 +23,7 @@ export const GrowthFactorChart = ({ data }) => {
   const good = "#159f8c";
   const bad = "#cc365b";
   const currentColour = data[data.length - 1].growthFactor < 1 ? good : bad;
-  const height = 200;
+  const height = 160;
   const chartHeight = 50;
   const xDomain = extent(data, d => d.date);
   const xRange = [0, width];
@@ -144,9 +140,12 @@ export const GrowthFactorChart = ({ data }) => {
           />
           <line
             x1={xScale(xDomain[1])}
-            y1={yScale(data[data.length - 1].growthFactor) - 7}
-            y2={height - chartHeight}
             x2={xScale(xDomain[1])}
+            y1={yScale(data[data.length - 1].growthFactor) - 7}
+            y2={Math.min(
+              yScale(data[data.length - 1].growthFactor) - 7,
+              height - chartHeight + 15
+            )}
             stroke={currentColour}
           />
           {highlight && highlight.growthFactor ? (
@@ -188,89 +187,9 @@ export const GrowthFactorChart = ({ data }) => {
           }}
         >
           <span>{format(highlight.date, "MMM d")}</span>
-          <span>{highlight.growthFactor.toFixed(2)}</span>
+          <span>{growthFactorFormatter(highlight.growthFactor)}</span>
         </div>
       ) : null}
-    </div>
-  );
-};
-
-export const JurisdictionGrowthRate = ({ name, data, smoothing }) => {
-  const series = growthRate(
-    data,
-    smoothing,
-    d => d.cumulative,
-    (v, d) => ({ ...d, growthRate: v })
-  );
-  const currentGrowthRate = series[series.length - 1].growthRate;
-  return (
-    <div className={styles.chart}>
-      <p className={styles.label}>{name}</p>
-      <h1 className={styles.currentValue}>
-        {(currentGrowthRate * 100).toFixed(1)}%
-      </h1>
-      <LineChart width={200} height={80} data={series}>
-        <Line
-          type="monotone"
-          dataKey="growthRate"
-          stroke="#8884d8"
-          strokeWidth={1}
-          dot={false}
-        />
-        <YAxis
-          allowDataOverflow={true}
-          tick={{ fontSize: "0.8rem" }}
-          tickFormatter={d => `${(d * 100).toFixed(0)}%`}
-          domain={[-0.1, 0.5]}
-          width={30}
-          orientation="right"
-        />
-
-        <Tooltip content={<GrowthRateTooltip />} />
-      </LineChart>
-    </div>
-  );
-};
-
-export const JurisdictionGrowthFactor = ({ name, data, smoothing }) => {
-  const series = pairs(
-    movingAverage(
-      data,
-      smoothing,
-      d => d.added,
-      (v, d) => ({ ...d, added: v })
-    ),
-    (a, b) => ({
-      ...b,
-      growthFactor: b.added < 2 ? null : b.added / a.added
-    })
-  );
-  const currentGrowthFactor = series[series.length - 1].growthFactor;
-  return (
-    <div className={styles.chart}>
-      <p className={styles.label}>{name}</p>
-      <h1 className={styles.currentValue}>
-        {currentGrowthFactor ? currentGrowthFactor.toFixed(2) : "unknown"}
-      </h1>
-      <LineChart width={200} height={80} data={series}>
-        <Line
-          type="monotone"
-          dataKey="growthFactor"
-          stroke="#8884d8"
-          strokeWidth={1}
-          dot={false}
-        />
-        <YAxis
-          allowDataOverflow={true}
-          tick={{ fontSize: "0.8rem" }}
-          tickFormatter={d => `${d.toFixed(0)}`}
-          domain={[0, 2]}
-          width={30}
-          orientation="right"
-        />
-
-        <Tooltip content={<GrowthFactorTooltip />} />
-      </LineChart>
     </div>
   );
 };
