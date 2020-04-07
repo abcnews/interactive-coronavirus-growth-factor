@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import styles from "./styles.scss";
 import { GrowthRateTooltip, GrowthFactorTooltip } from "../Tooltips";
-import { movingAverage, growthRate } from "../utils";
+import { movingAverage, growthRate, findGaps } from "../utils";
 import { pairs, extent, min, bisector } from "d3-array";
 import {
   LineChart,
@@ -31,13 +31,15 @@ export const GrowthFactorChart = ({ data }) => {
   const chartHeight = 50;
   const xDomain = extent(data, d => d.date);
   const xRange = [0, width];
-  const yDomain = [
-    Math.max(
-      0,
-      min(data, d => d.growthFactor)
-    ),
-    Math.max(data[data.length - 1].growthFactor, 1.5)
-  ];
+  const yDomain = [0.7, 1.5];
+
+  // const yDomain = [
+  //   Math.max(
+  //     0,
+  //     min(data, d => d.growthFactor)
+  //   ),
+  //   Math.max(data[data.length - 1].growthFactor, 1.5)
+  // ];
 
   const yRange = [height, height - chartHeight];
 
@@ -48,10 +50,19 @@ export const GrowthFactorChart = ({ data }) => {
     .domain(yDomain)
     .range(yRange);
   const bisectDate = bisector(d => d.date).left;
+
+  const gaps = findGaps(data).map(([a, b]) => {
+    return {
+      x1: xScale(a === "start" ? data[0].date : a.date),
+      x2: xScale(b === "end" ? data[data.length - 1].date : b.date),
+      y1: yScale(a === "start" ? b.growthFactor : a.growthFactor),
+      y2: yScale(b === "end" ? a.growthFactor : b.growthFactor)
+    };
+  });
   const path = line()
     .x(d => xScale(d.date))
     .y(d => yScale(d.growthFactor))
-    .defined(d => d.growthFactor !== null && d.added >= 2)
+    .defined(d => d.growthFactor !== null)
     .curve(curveMonotoneX);
   return (
     <div
@@ -59,11 +70,12 @@ export const GrowthFactorChart = ({ data }) => {
       style={{
         height: chartHeight,
         position: "relative",
-        marginBottom: "1.1em"
+        marginBottom: "1.1em",
+        zIndex: highlight ? 4 : 1
       }}
     >
       <svg
-        className={styles.svg}
+        className={`${styles.svg} ${highlight ? styles.hovered : ""}`}
         width={width + 30}
         height={height + 30}
         style={{ bottom: 0, left: 0 }}
@@ -111,6 +123,11 @@ export const GrowthFactorChart = ({ data }) => {
             strokeWidth="2"
             mask={`url(#good-${uid})`}
           />
+
+          {gaps.map((pos, i) => (
+            <line {...pos} key={`gap${i}`} className={styles.gap} />
+          ))}
+
           <line
             className={styles.tick}
             x1={width}
@@ -132,7 +149,7 @@ export const GrowthFactorChart = ({ data }) => {
             x2={xScale(xDomain[1])}
             stroke={currentColour}
           />
-          {highlight ? (
+          {highlight && highlight.growthFactor ? (
             <line
               className={styles.tick}
               x1={xScale(highlight.date)}
@@ -161,7 +178,7 @@ export const GrowthFactorChart = ({ data }) => {
       >
         {format(xDomain[1], "MMM d")}
       </div>
-      {highlight ? (
+      {highlight && highlight.growthFactor ? (
         <div
           className={styles.tooltip}
           style={{

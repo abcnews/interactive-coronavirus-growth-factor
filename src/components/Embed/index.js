@@ -36,28 +36,26 @@ export const Embed = ({ jurisdiction, data }) => {
           {currentGrowthFactor ? currentGrowthFactor.toFixed(2) : "?"}
         </span>
       </p>
-      <div className={styles.chart}>
-        <GrowthFactorChart data={series.slice(-30)} />
-        <div className={styles.highLow}>
-          {high ? (
-            <dl className={styles.high}>
-              <dt>Highest</dt>
-              <dd>
-                <strong>{high.growthFactor.toFixed(2)}</strong>{" "}
-                {format(high.date, "MMM do")}
-              </dd>
-            </dl>
-          ) : null}
-          {low ? (
-            <dl className={styles.low}>
-              <dt>Lowest</dt>
-              <dd>
-                <strong>{low.growthFactor.toFixed(2)}</strong>{" "}
-                {format(low.date, "MMM do")}
-              </dd>
-            </dl>
-          ) : null}
-        </div>
+      <GrowthFactorChart data={series.slice(-30)} />
+      <div className={styles.highLow}>
+        {high ? (
+          <dl className={styles.high}>
+            <dt>Highest</dt>
+            <dd>
+              <strong>{high.growthFactor.toFixed(2)}</strong>{" "}
+              {format(high.date, "MMM do")}
+            </dd>
+          </dl>
+        ) : null}
+        {low ? (
+          <dl className={styles.low}>
+            <dt>Lowest</dt>
+            <dd>
+              <strong>{low.growthFactor.toFixed(2)}</strong>{" "}
+              {format(low.date, "MMM do")}
+            </dd>
+          </dl>
+        ) : null}
       </div>
       <a className={styles.more} href="">
         Find out more

@@ -26,6 +26,12 @@
   position: absolute;
   left: 0;
 }
+
+.gap {
+  stroke: #ccc;
+  stroke-dasharray: 4 4;
+}
+
 .tick {
   stroke: #a5b3b6;
   stroke-width: 1;
@@ -47,7 +53,9 @@
   span {
     white-space: nowrap;
     display: block;
-    background-color: #e9f7f7;
+    background-color: rgba(233, 247, 247, 0.9);
+    padding: 0 4px;
+    border-radius: 3px;
     &:nth-child(2) {
       font-family: ABCSerif;
       font-weight: bold;

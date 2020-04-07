@@ -18,8 +18,8 @@ export const SmallMultiples = ({ jurisdiction, data }) => {
   );
   const currentGrowthFactor = series[series.length - 1].growthFactor;
   return (
-    <div className={styles.embed}>
-      <h1>{jurisdiction}</h1>
+    <div className={styles.chart}>
+      <h1 className={styles.title}>{jurisdiction}</h1>
       <p className={styles.current}>
         <span>
           current daily
@@ -34,28 +34,27 @@ export const SmallMultiples = ({ jurisdiction, data }) => {
           {currentGrowthFactor ? currentGrowthFactor.toFixed(2) : "?"}
         </span>
       </p>
-      <div className={styles.chart}>
-        <GrowthFactorChart data={series.slice(-30)} />
-        <div className={styles.highLow}>
-          {high ? (
-            <dl className={styles.high}>
-              <dt>Highest</dt>
-              <dd>
-                <strong>{high.growthFactor.toFixed(2)}</strong>{" "}
-                {format(high.date, "MMM do")}
-              </dd>
-            </dl>
-          ) : null}
-          {low ? (
-            <dl className={styles.low}>
-              <dt>Lowest</dt>
-              <dd>
-                <strong>{low.growthFactor.toFixed(2)}</strong>{" "}
-                {format(low.date, "MMM do")}
-              </dd>
-            </dl>
-          ) : null}
-        </div>
+
+      <GrowthFactorChart data={series.slice(-30)} />
+      <div className={styles.highLow}>
+        {high ? (
+          <dl className={styles.high}>
+            <dt>Highest</dt>
+            <dd>
+              <strong>{high.growthFactor.toFixed(2)}</strong>{" "}
+              {format(high.date, "MMM do")}
+            </dd>
+          </dl>
+        ) : null}
+        {low ? (
+          <dl className={styles.low}>
+            <dt>Lowest</dt>
+            <dd>
+              <strong>{low.growthFactor.toFixed(2)}</strong>{" "}
+              {format(low.date, "MMM do")}
+            </dd>
+          </dl>
+        ) : null}
       </div>
     </div>
   );

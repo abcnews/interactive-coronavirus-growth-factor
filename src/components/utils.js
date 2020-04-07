@@ -77,8 +77,7 @@ export const growthRate = (
 export const growthFactor = (data, accessor = d => d) =>
   pairs(data, (a, b) => ({
     ...b,
-    growthFactor:
-      accessor(b) === 0 || accessor(a) === 0 ? null : accessor(b) / accessor(a)
+    growthFactor: accessor(a) < 5 ? null : accessor(b) / accessor(a)
   }));
 
 export const addGrowthFactor = (data, smoothing = 1) =>
@@ -96,6 +95,20 @@ export const addGrowthFactor = (data, smoothing = 1) =>
     ),
     d => d.added
   );
+
+export const findGaps = data => {
+  return pairs(
+    pairs(data)
+      .map(([a, b], i, arr) => {
+        if (i === 0 && a.growthFactor === null) return "start";
+        if (a.growthFactor !== null && b.growthFactor === null) return a;
+        if (a.growthFactor === null && b.growthFactor !== null) return b;
+        if (i === arr.length - 1 && b.growthFactor === null) return "end";
+        return null;
+      })
+      .filter(d => d !== null)
+  ).filter((d, i) => i % 2 === 0);
+};
 
 export const sanityChecks = data => {
   Array.from(groupByJurisdiction(data)).forEach(([jurisdiction, data]) => {
