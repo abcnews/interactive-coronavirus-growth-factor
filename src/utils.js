@@ -232,16 +232,15 @@ export const renderGraphics = data =>
     );
   });
 
-const filterByJurisdiction = data =>
+const filterByJurisdiction = (data, jurisdictions) =>
   data.filter(d => ([jurisdiction]) =>
-    jurisdictionsOfInterest.indexOf(jurisdiction) === -1
+    jurisdictions.indexOf(jurisdiction) === -1
   );
 
 export const fetchCountryTotals = () =>
   fetch(dataUrl)
     .then(res => res.json())
     .then(Object.entries)
-    .then(filterByJurisdiction)
     .then(parseHybridData)
     .then(groupByJurisdiction)
     .then(calculateNewCases);

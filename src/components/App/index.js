@@ -4,7 +4,6 @@ import worm from "./worm.svg";
 import { csvParse } from "d3-dsv";
 import { parse, format } from "date-fns";
 import { min, max, group, rollup, sum, ascending, pairs } from "d3-array";
-import { JurisdictionGrowthRate, JurisdictionGrowthFactor } from "../Charts";
 import { Embed } from "../Embed";
 import { SmallMultiples } from "../SmallMultiples";
 import {
@@ -14,81 +13,6 @@ import {
   groupByJurisdiction,
   sanityChecks
 } from "../../utils";
-
-const jurisdictionsOfInterest = [
-  "Australia",
-  "China",
-  "US",
-  "United Kingdom",
-  "Denmark",
-  "Sweden",
-  "Spain",
-  "Japan",
-  "Korea, South"
-];
-
-const addNationalData = data => {
-  return data.concat(
-    Array.from(
-      rollup(
-        data,
-        v => sum(v, d => d.cumulative),
-        d => d.timestamp
-      )
-    ).map((d, i, arr) => ({
-      date: new Date(d[0]),
-      timestamp: d[0],
-      jurisdiction: "National",
-      cumulative: d[1],
-      added: (arr[i - 1] ? d[1] - arr[i - 1][1] : d[1]) || d[1]
-    }))
-  );
-};
-
-const parseHybridData = data => {
-  return Object.entries(data)
-    .reduce((acc, [jurisdiction, values]) => {
-      if (jurisdictionsOfInterest.indexOf(jurisdiction) === -1) return acc;
-      const objs = Object.entries(values).map(([dateString, cumulative]) => {
-        const date = parse(dateString, "yyyy-MM-dd", new Date());
-        return { date, timestamp: date.getTime(), jurisdiction, cumulative };
-      });
-      return acc.concat(objs);
-    }, [])
-    .sort((a, b) => ascending(a.timestamp, b.timestamp));
-};
-
-const calcNewCases = (d, i, arr) => ({
-  ...d,
-  added: i === 0 ? d.cumulative : d.cumulative - arr[i - 1].cumulative
-});
-
-const calculateNewCases = groups => {
-  console.log("groups", groups);
-  const keys = Array.from(groups.keys());
-  const mod = new Map();
-  keys.forEach(key => {
-    const data = groups.get(key);
-    mod.set(key, data.map(calcNewCases));
-  });
-  return mod;
-};
-
-const parseDsiData = data => {
-  return data
-    .map(d => {
-      const date = parse(d["Date announced"], "dd/MM/yyyy", new Date());
-      return {
-        date,
-        timestamp: date.getTime(),
-        jurisdiction: d["State/territory"],
-        cumulative: +d["Cumulative confirmed"],
-        added: +d["New cases"]
-      };
-    })
-    .filter(d => d.cumulative > 0)
-    .sort((a, b) => ascending(a.timestamp, b.timestamp));
-};
 
 export default props => {
   const [data, setData] = useState(null);

@@ -1,7 +1,9 @@
 .extremes {
+  --good: #159f8c;
+  --bad: #cc365b;
   font-size: 0.6875rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin: 0 1em;
   color: #5c6c70;
   dl {
@@ -26,10 +28,10 @@
   }
 }
 
-.Lowest {
+.good {
   color: var(--good);
 }
 
-.Highest {
+.bad {
   color: var(--bad);
 }

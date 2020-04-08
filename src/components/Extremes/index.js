@@ -15,7 +15,7 @@ const Extreme = ({ data, label, className }) =>
     </dl>
   ) : null;
 
-export const Extremes = ({ data, className }) => {
+export const Extremes = ({ data, className, emphasise }) => {
   const series = data.filter(d => !!d.growthFactor);
   const low = least(series, growthFactorAccessor);
   const high = greatest(series, growthFactorAccessor);
@@ -26,7 +26,18 @@ export const Extremes = ({ data, className }) => {
   return (
     <div className={`${styles.extremes} ${className}`}>
       {extremes.map(([data, label], i) => (
-        <Extreme data={data} label={label} className={styles[label]} key={i} />
+        <Extreme
+          data={data}
+          label={label}
+          className={
+            emphasise
+              ? data.growthFactor > 1
+                ? styles.bad
+                : styles.good
+              : null
+          }
+          key={i}
+        />
       ))}
     </div>
   );

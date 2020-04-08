@@ -1,7 +1,7 @@
 .chart {
   font-family: ABCSans;
   font-size: 1rem;
-  background-color: #e9f7f7;
+  background-color: var(--bg);
   padding: 15px;
   width: 100%;
   display: flex;
@@ -10,12 +10,22 @@
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  flex: 1 0 33%;
+  min-width: 220px;
+
+  --good: #159f8c;
+  --bad: #cc365b;
 }
 
 .title {
   position: relative;
   z-index: 3;
-  margin-top: 0;
-  font-size: 1.6rem;
+  margin: 1em 0;
+  font-size: 1.3125rem;
   font-weight: bold;
+}
+
+.small-multipes {
+  display: flex;
+  flex-wrap: wrap;
 }

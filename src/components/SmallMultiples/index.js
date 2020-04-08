@@ -3,13 +3,15 @@ import styles from "./styles.scss";
 import {
   addGrowthFactor,
   growthFactorAccessor,
-  jurisdictionName
+  jurisdictionName,
+  filterByJurisdiction
 } from "../../utils";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
+import { presets } from "../../constants";
 
-export const SmallMultiples = ({
+export const SingleJurisdiction = ({
   jurisdiction,
   data,
   smoothing = 5,
@@ -36,8 +38,27 @@ export const SmallMultiples = ({
       <GrowthFactorChart
         data={series.slice(-30)}
         innerHeightDomain={[0.7, 2]}
+        height={300}
       />
-      <Extremes data={series} />
+      <Extremes deempphasise={true} data={series} />
     </div>
   );
+};
+
+export const SmallMultiples = ({ preset, data }) => {
+  const config = presets[preset];
+
+  return config ? (
+    <div className={styles.smallMultipes}>
+      {Array.from(data)
+        .filter(([jurisdiction]) => config.jurisdictions.includes(jurisdiction))
+        .map(([jurisdiction, data], i) => (
+          <SingleJurisdiction
+            jurisdiction={jurisdiction}
+            data={data}
+            primary={i === 0}
+          />
+        ))}
+    </div>
+  ) : null;
 };
