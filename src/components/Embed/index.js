@@ -14,6 +14,7 @@ export const Embed = ({ jurisdiction, data, smoothing = 5 }) => {
       growth factor is{" "}
     </>
   );
+
   return (
     <div className={styles.embed}>
       <h1 className={styles.title}>

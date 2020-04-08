@@ -1,4 +1,74 @@
-import { min, max, pairs, group } from "d3-array";
+import * as a2o from "@abcnews/alternating-case-to-object";
+import React from "react";
+import { render } from "react-dom";
+import { min, max, pairs, group, ascending } from "d3-array";
+import { dataUrl, jurisdictionsOfInterest } from "./constants";
+import { parse } from "date-fns";
+import { Embed } from "./components/Embed";
+
+export const addNationalData = data => {
+  return data.concat(
+    Array.from(
+      rollup(
+        data,
+        v => sum(v, d => d.cumulative),
+        d => d.timestamp
+      )
+    ).map((d, i, arr) => ({
+      date: new Date(d[0]),
+      timestamp: d[0],
+      jurisdiction: "National",
+      cumulative: d[1],
+      added: (arr[i - 1] ? d[1] - arr[i - 1][1] : d[1]) || d[1]
+    }))
+  );
+};
+
+export const parseHybridData = data => {
+  return data
+    .reduce((acc, [jurisdiction, values]) => {
+      const objs = Object.entries(values).map(([dateString, cumulative]) => {
+        const date = parse(dateString, "yyyy-MM-dd", new Date());
+        return { date, timestamp: date.getTime(), jurisdiction, cumulative };
+      });
+      return acc.concat(objs);
+    }, [])
+    .sort((a, b) => ascending(a.timestamp, b.timestamp));
+};
+
+export const calcNewCases = (d, i, arr) => ({
+  ...d,
+  added: i === 0 ? d.cumulative : d.cumulative - arr[i - 1].cumulative
+});
+
+export const calculateNewCases = groups => {
+  console.log("groups", groups);
+  const keys = Array.from(groups.keys());
+  const mod = new Map();
+  keys.forEach(key => {
+    const data = groups.get(key);
+    mod.set(key, data.map(calcNewCases));
+  });
+  return mod;
+};
+
+export const parseDsiData = data => {
+  return data
+    .map(d => {
+      const date = parse(d["Date announced"], "dd/MM/yyyy", new Date());
+      return {
+        date,
+        timestamp: date.getTime(),
+        jurisdiction: d["State/territory"],
+        cumulative: +d["Cumulative confirmed"],
+        added: +d["New cases"]
+      };
+    })
+    .filter(d => d.cumulative > 0)
+    .sort((a, b) => ascending(a.timestamp, b.timestamp));
+};
+
+export const groupByJurisdiction = data => group(data, d => d.jurisdiction);
 
 export const findMissingDays = d => {
   const minDay = min(d, d => d.timestamp);
@@ -31,8 +101,6 @@ export const trimDsiData = data => {
     ? data.filter(d => d.timestamp !== maxDay)
     : data;
 };
-
-export const groupByJurisdiction = data => group(data, d => d.jurisdiction);
 
 export const movingAverage = (
   data,
@@ -137,3 +205,43 @@ export const jurisdictionName = name => {
   map.set("US", "United States");
   return map.get(name) || name;
 };
+
+export const renderGraphics = data =>
+  [
+    ...document.querySelectorAll(
+      `a[id^=growthfactorgraphicPRESET],a[name^=growthfactorgraphicPRESET]`
+    )
+  ].map(anchorEl => {
+    console.log("anchorEl", anchorEl);
+    const props = a2o(
+      anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
+    );
+    const mountEl = document.createElement("div");
+
+    mountEl.className = "u-pull";
+
+    Object.keys(props).forEach(
+      propName => (mountEl.dataset[propName] = props[propName])
+    );
+    anchorEl.parentElement.insertBefore(mountEl, anchorEl);
+    anchorEl.parentElement.removeChild(anchorEl);
+
+    render(
+      <Embed jurisdiction="Australia" data={data.get("Australia")} />,
+      mountEl
+    );
+  });
+
+const filterByJurisdiction = data =>
+  data.filter(d => ([jurisdiction]) =>
+    jurisdictionsOfInterest.indexOf(jurisdiction) === -1
+  );
+
+export const fetchCountryTotals = () =>
+  fetch(dataUrl)
+    .then(res => res.json())
+    .then(Object.entries)
+    .then(filterByJurisdiction)
+    .then(parseHybridData)
+    .then(groupByJurisdiction)
+    .then(calculateNewCases);
