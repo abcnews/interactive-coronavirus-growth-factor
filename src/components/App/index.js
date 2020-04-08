@@ -13,7 +13,7 @@ import {
   findMiscalculations,
   groupByJurisdiction,
   sanityChecks
-} from "../utils";
+} from "../../utils";
 
 const jurisdictionsOfInterest = [
   "Australia",

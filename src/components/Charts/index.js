@@ -6,7 +6,7 @@ import {
   growthRate,
   findGaps,
   growthFactorFormatter
-} from "../utils";
+} from "../../utils";
 import { pairs, extent, min, bisector } from "d3-array";
 import useDimensions from "react-use-dimensions";
 import { line, curveMonotoneX } from "d3-shape";

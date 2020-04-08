@@ -4,7 +4,7 @@ import {
   addGrowthFactor,
   growthFactorAccessor,
   jurisdictionName
-} from "../utils";
+} from "../../utils";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";

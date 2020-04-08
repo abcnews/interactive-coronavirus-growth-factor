@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./styles.scss";
-import { addGrowthFactor, growthFactorAccessor } from "../utils";
+import { addGrowthFactor, growthFactorAccessor } from "../../utils";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";

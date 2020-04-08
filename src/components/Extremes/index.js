@@ -1,5 +1,5 @@
 import React from "react";
-import { growthFactorAccessor, growthFactorFormatter } from "../utils";
+import { growthFactorAccessor, growthFactorFormatter } from "../../utils";
 import { format } from "date-fns";
 import { least, greatest } from "d3-array";
 import styles from "./styles.scss";

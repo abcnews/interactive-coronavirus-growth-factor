@@ -1,5 +1,5 @@
 import React from "react";
-import { growthFactorFormatter } from "../utils";
+import { growthFactorFormatter } from "../../utils";
 import styles from "./styles.scss";
 export const CurrentLabel = ({ labelText, value, primary = true }) => {
   const goodBadStyle = value < 1 ? styles.good : styles.bad;
