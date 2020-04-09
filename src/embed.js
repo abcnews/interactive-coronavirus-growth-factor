@@ -39,6 +39,6 @@ const renderEmbed = data =>
     );
   });
 
-fetchCountryTotals({ includeLocal: false }).then(countryTotals =>
+fetchCountryTotals().then(countryTotals =>
   domready(() => renderEmbed(countryTotals))
 );

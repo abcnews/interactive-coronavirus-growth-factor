@@ -17,7 +17,11 @@ export const Hero = ({ data, smoothing = 5 }) => {
 
   return (
     <div className={styles.hero}>
-      <CurrentLabel labelText={labelText} value={currentGrowthFactor} />
+      <CurrentLabel
+        labelText={labelText}
+        value={currentGrowthFactor}
+        first={true}
+      />
       <GrowthFactorChart data={series.slice(-35)} innerHeight={100} />
       <Extremes data={series} className={styles.extremes} emphasise={true} />
     </div>

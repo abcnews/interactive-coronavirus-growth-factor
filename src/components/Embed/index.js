@@ -31,11 +31,6 @@ export const Embed = ({ jurisdiction, data, smoothing = 5 }) => {
       <a className={styles.more} href="">
         Find out more
       </a>
-      <footer className={styles.footer}>
-        Growth factors are calculated using a five day moving average of new
-        cases. A growth factor is not calculated for any day when there are
-        fewer than five new cases per day over the previous five day period.
-      </footer>
     </div>
   );
 };

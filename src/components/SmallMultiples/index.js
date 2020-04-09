@@ -6,6 +6,7 @@ import {
   jurisdictionName,
   filterByJurisdiction
 } from "../../utils";
+import { ascending } from "d3-array";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
@@ -61,6 +62,12 @@ export const SmallMultiples = ({ preset, data, limit }) => {
           config.jurisdictions
             ? ([jurisdiction]) => config.jurisdictions.includes(jurisdiction)
             : () => true
+        )
+        .sort(([a], [b]) =>
+          ascending(
+            jurisdictionName(a).toLowerCase(),
+            jurisdictionName(b).toLowerCase()
+          )
         )
         .map(([jurisdiction, data], i) => (
           <SingleJurisdiction

@@ -219,31 +219,6 @@ export const jurisdictionName = name => {
   return map.get(name) || name;
 };
 
-export const renderGraphics = data =>
-  [
-    ...document.querySelectorAll(
-      `a[id^=growthfactorgraphicPRESET],a[name^=growthfactorgraphicPRESET]`
-    )
-  ].map(anchorEl => {
-    const props = a2o(
-      anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
-    );
-    const mountEl = document.createElement("div");
-
-    mountEl.className = "u-pull";
-
-    Object.keys(props).forEach(
-      propName => (mountEl.dataset[propName] = props[propName])
-    );
-    anchorEl.parentElement.insertBefore(mountEl, anchorEl);
-    anchorEl.parentElement.removeChild(anchorEl);
-
-    render(
-      <Embed jurisdiction="Australia" data={data.get("Australia")} />,
-      mountEl
-    );
-  });
-
 const mixinLocalAcquisitionData = data =>
   data
     .concat(
