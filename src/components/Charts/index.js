@@ -21,7 +21,7 @@ export const GrowthFactorChart = ({
   innerHeightDomain
 }) => {
   const [ref, { x, y, width: chartWidth }] = useDimensions();
-  const width = chartWidth - 30;
+  const width = chartWidth ? chartWidth - 30 : 1;
   const [svgRef, svgDimensions] = useDimensions();
   const [highlight, setHighlight] = useState(null);
   const uid = useMemo(() => uuid(), [data]);
@@ -56,6 +56,7 @@ export const GrowthFactorChart = ({
       y2: yScale(b === "end" ? a.growthFactor : b.growthFactor)
     };
   });
+
   const path = line()
     .x(d => xScale(d.date))
     .y(d => yScale(d.growthFactor))

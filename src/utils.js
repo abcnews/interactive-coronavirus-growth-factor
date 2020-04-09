@@ -47,7 +47,6 @@ export const calcNewCases = (d, i, arr) => ({
 });
 
 export const calculateNewCases = groups => {
-  console.log("groups", groups);
   const keys = Array.from(groups.keys());
   const mod = new Map();
   keys.forEach(key => {
@@ -217,7 +216,6 @@ export const renderGraphics = data =>
       `a[id^=growthfactorgraphicPRESET],a[name^=growthfactorgraphicPRESET]`
     )
   ].map(anchorEl => {
-    console.log("anchorEl", anchorEl);
     const props = a2o(
       anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
     );

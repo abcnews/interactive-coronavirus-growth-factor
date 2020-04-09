@@ -18,12 +18,11 @@ const renderSmallMultiples = data =>
       `a[id^=growthfactorgraphicPRESET],a[name^=growthfactorgraphicPRESET]`
     )
   ].map(anchorEl => {
-    console.log("anchorEl", anchorEl);
     const props = a2o(
       anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
     );
     const mountEl = document.createElement("div");
-    console.log("mountEl", mountEl);
+
     mountEl.className = "u-pull";
 
     Object.keys(props).forEach(
