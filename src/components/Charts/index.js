@@ -26,7 +26,7 @@ export const GrowthFactorChart = ({
   const [highlight, setHighlight] = useState(null);
   const uid = useMemo(() => uuid(), [data]);
   const good = "#159f8c";
-  const bad = "#cc365b";
+  const bad = "#EA526F";
   const currentColour = data[data.length - 1].growthFactor < 1 ? good : bad;
   const xDomain = extent(data, d => d.date);
   const xRange = [0, width];

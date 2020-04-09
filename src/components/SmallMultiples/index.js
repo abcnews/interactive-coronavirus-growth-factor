@@ -15,7 +15,8 @@ export const SingleJurisdiction = ({
   jurisdiction,
   data,
   smoothing = 5,
-  primary = false
+  primary = false,
+  first = false
 }) => {
   const series = addGrowthFactor(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
@@ -34,6 +35,7 @@ export const SingleJurisdiction = ({
         labelText={labelText}
         value={currentGrowthFactor}
         primary={primary}
+        first={first}
       />
       <GrowthFactorChart
         data={series.slice(-30)}
@@ -64,7 +66,8 @@ export const SmallMultiples = ({ preset, data }) => {
             key={jurisdiction}
             jurisdiction={jurisdiction}
             data={data}
-            primary={i === 0}
+            first={i === 0}
+            primary={false}
           />
         ))}
     </div>
