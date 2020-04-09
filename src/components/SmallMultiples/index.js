@@ -38,7 +38,7 @@ export const SingleJurisdiction = ({
       <GrowthFactorChart
         data={series.slice(-30)}
         innerHeightDomain={[0.7, 2]}
-        height={300}
+        height={150}
       />
       <Extremes deempphasise={true} data={series} />
     </div>
@@ -50,9 +50,14 @@ export const SmallMultiples = ({ preset, data }) => {
   return config ? (
     <div className={styles.smallMultipes}>
       {Array.from(data)
-        .filter(([jurisdiction]) => config.jurisdictions.includes(jurisdiction))
+        .filter(
+          config.jurisdictions
+            ? ([jurisdiction]) => config.jurisdictions.includes(jurisdiction)
+            : () => true
+        )
         .map(([jurisdiction, data], i) => (
           <SingleJurisdiction
+            key={jurisdiction}
             jurisdiction={jurisdiction}
             data={data}
             primary={i === 0}

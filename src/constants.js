@@ -10,9 +10,10 @@ export const presets = {
   local: {
     jurisdictions: ["Australia", "Australia (local transmission)"]
   },
+  all: {},
   world: {
     jurisdictions: [
-      "Australia",
+      "Angola",
       "China",
       "US",
       "United Kingdom",
