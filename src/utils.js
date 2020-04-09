@@ -1,7 +1,7 @@
 import * as a2o from "@abcnews/alternating-case-to-object";
 import React from "react";
 import { render } from "react-dom";
-import { sum, min, max, pairs, group, rollups, ascending } from "d3-array";
+import { sum, min, max, pairs, rollups, ascending } from "d3-array";
 import { csvParse } from "d3-dsv";
 import {
   dataUrl,
@@ -72,7 +72,18 @@ export const parseDsiData = data => {
     .sort((a, b) => ascending(a.timestamp, b.timestamp));
 };
 
-export const groupByJurisdiction = data => group(data, d => d.jurisdiction);
+export const groupByJurisdiction = data => {
+  const grouped = new Map();
+  data.forEach(d => {
+    let group = grouped.get(d.jurisdiction);
+    if (group) {
+      group.push(d);
+    } else {
+      grouped.set(d.jurisdiction, [d]);
+    }
+  });
+  return grouped;
+};
 
 export const findMissingDays = d => {
   const minDay = min(d, d => d.timestamp);
