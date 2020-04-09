@@ -47,9 +47,13 @@ export const SingleJurisdiction = ({
 
 export const SmallMultiples = ({ preset, data }) => {
   const config = presets[preset];
+  const dataArr = [];
+  data.forEach((jurisdictionData, jurisdiction) =>
+    dataArr.push([jurisdiction, jurisdictionData])
+  );
   return config ? (
     <div className={styles.smallMultipes}>
-      {Array.from(data)
+      {dataArr
         .filter(
           config.jurisdictions
             ? ([jurisdiction]) => config.jurisdictions.includes(jurisdiction)

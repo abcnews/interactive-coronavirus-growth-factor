@@ -311,4 +311,5 @@ export const fetchCountryTotals = ({ includeLocal = false } = {}) =>
     .then(parseHybridData)
     .then(includeLocal ? mixinLocalAcquisitionData : d => d)
     .then(groupByJurisdiction)
-    .then(calculateNewCases);
+    .then(calculateNewCases)
+    .catch(console.error);
