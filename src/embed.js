@@ -1,3 +1,5 @@
+import "regenerator-runtime/runtime.js";
+import "core-js/features/symbol";
 import React from "react";
 import { render } from "react-dom";
 import * as a2o from "@abcnews/alternating-case-to-object";

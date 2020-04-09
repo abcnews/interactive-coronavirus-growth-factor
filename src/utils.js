@@ -287,9 +287,12 @@ export const fetchLocalAcquisitionData = () =>
     .then(res => res.text())
     .then(csvParse);
 
-const mixinLocalAcquisitionData = async data => {
-  const lad = await fetchLocalAcquisitionData().then(parseLocalAcquisitionData);
-  return data.concat(lad).sort((a, b) => ascending(a.timestamp, b.timestamp));
+const mixinLocalAcquisitionData = data => {
+  return fetchLocalAcquisitionData()
+    .then(parseLocalAcquisitionData)
+    .then(lad =>
+      data.concat(lad).sort((a, b) => ascending(a.timestamp, b.timestamp))
+    );
 };
 
 export const fetchCountryTotals = ({ includeLocal = false } = {}) =>
