@@ -4,14 +4,15 @@
   display: flex;
   text-align: right;
   justify-content: flex-end;
-  font-family: ABCSerif;
-  font-size: 0.875rem;
+  font-family: "ABCSerif", "Book Antiqua", "Palatino Linotype", Palatino, serif;
+  font-size: 0.875rem !important;
   font-weight: bold;
   pointer-events: none;
   margin: 0;
   > span {
     padding: 1px;
-    background-color: rgba(243, 252, 252, 0.75);
+    background-color: var(--shim);
+    line-height: 1.3;
     border-radius: 3px;
     color: #5c6c70;
     &.primary {
@@ -23,10 +24,8 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-left: 0.4rem;
-    line-height: 1;
     position: relative;
-    top: -1px;
-
+    line-height: 1 !important;
     &.good {
       color: var(--good);
     }
@@ -34,11 +33,4 @@
       color: var(--bad);
     }
   }
-}
-
-.key-number {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-left: 1rem;
-  line-height: 1;
 }

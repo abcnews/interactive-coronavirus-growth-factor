@@ -1,5 +1,10 @@
 .embed {
-  font-family: ABCSans;
+  --good: #159f8c;
+  --bad: #cc365b;
+  --bg: rgb(233, 247, 247);
+  --shim: rgba(233, 247, 247, 0.75);
+
+  font-family: "ABCSans", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   background-color: var(--bg);
   padding: 15px;
@@ -20,20 +25,24 @@
 .title {
   position: relative;
   z-index: 3;
-  margin-top: 0;
+  margin: 0 0 1em;
   font-size: 1rem;
-  font-weight: normal;
+  line-height: 1.4375rem !important;
+  font-weight: normal !important;
+  letter-spacing: 0.001em;
   strong {
     font-weight: bold;
     white-space: nowrap;
   }
 }
 
-.more {
+.more,
+.more:link,
+.more:visited {
   display: block;
   border: 2px solid #000;
   border-radius: 3px;
-  margin: 15px;
+  margin: 15px 10px;
   padding: 12px;
   text-transform: uppercase;
   font-weight: bold;
@@ -44,6 +53,7 @@
 
 .footer {
   color: #586c70;
-  font-size: 0.6875rem;
+  font-size: 0.6875rem !important;
   text-align: left;
+  margin: 0 10px;
 }

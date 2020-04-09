@@ -27,16 +27,14 @@ export const Embed = ({ jurisdiction, data, smoothing = 5 }) => {
         height={200}
         innerHeight={60}
       />
-      <Extremes data={series} className={styles.extremes} />
+      <Extremes data={series} emphasise={true} className={styles.extremes} />
       <a className={styles.more} href="">
         Find out more
       </a>
       <footer className={styles.footer}>
-        <p>
-          A dotted grey line ( ) indicates that no data was available. There are
-          numerous success stories you will hear about businesses making it good
-          on the internet.
-        </p>
+        Growth factors are calculated using a five day moving average of new
+        cases. A growth factor is not calculated for any day when there are
+        fewer than five new cases per day over the previous five day period.
       </footer>
     </div>
   );

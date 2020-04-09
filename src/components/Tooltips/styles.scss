@@ -1,6 +1,6 @@
 .tooltip-wrapper {
   pointer-events: none;
-  background: rgba(243, 252, 252, 0.75);
+  background: var(--shim);
   padding: 0px 5px 2px;
   font-size: 1.2rem;
   strong {

@@ -1,4 +1,7 @@
 .chart {
+  --good: #159f8c;
+  --bad: #cc365b;
+  --shim: rgba(243, 252, 252, 0.75);
   font-family: ABCSans;
   font-size: 1rem;
   background-color: var(--bg);
@@ -12,9 +15,6 @@
   z-index: 1;
   flex: 1 0 33%;
   min-width: 220px;
-
-  --good: #159f8c;
-  --bad: #cc365b;
 }
 
 .title {

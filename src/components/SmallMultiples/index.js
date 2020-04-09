@@ -47,7 +47,6 @@ export const SingleJurisdiction = ({
 
 export const SmallMultiples = ({ preset, data }) => {
   const config = presets[preset];
-
   return config ? (
     <div className={styles.smallMultipes}>
       {Array.from(data)
