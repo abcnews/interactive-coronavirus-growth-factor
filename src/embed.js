@@ -11,10 +11,9 @@ const domready = fn => {
 const renderEmbed = data =>
   [
     ...document.querySelectorAll(
-      `a[id^=growthfactorgraphicPRESET],a[name^=growthfactorgraphicPRESET]`
+      `a[id^=growthfactorgraphicEMBED],a[name^=growthfactorgraphicEMBED]`
     )
   ].map(anchorEl => {
-    console.log("anchorEl", anchorEl);
     const props = a2o(
       anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
     );
@@ -29,11 +28,14 @@ const renderEmbed = data =>
     anchorEl.parentElement.removeChild(anchorEl);
 
     render(
-      <Embed jurisdiction="Australia" data={data.get("Australia")} />,
+      <Embed
+        jurisdiction={props.embed || "Australia"}
+        data={data.get(props.embed || "Australia")}
+      />,
       mountEl
     );
   });
 
-fetchCountryTotals().then(countryTotals =>
+fetchCountryTotals({ includeLocal: false }).then(countryTotals =>
   domready(() => renderEmbed(countryTotals))
 );
