@@ -1,12 +1,12 @@
 import * as a2o from "@abcnews/alternating-case-to-object";
 import React from "react";
 import { render } from "react-dom";
-import { sum, min, max, pairs, rollups, ascending } from "d3-array";
+import { sum, min, max, pairs, ascending } from "d3-array";
 import { csvParse } from "d3-dsv";
 import {
   dataUrl,
   jurisdictionsOfInterest,
-  localAcquisitionDataUrl
+  localAcquisitionsData
 } from "./constants";
 import { parse } from "date-fns";
 import { Embed } from "./components/Embed";
@@ -244,72 +244,19 @@ export const renderGraphics = data =>
     );
   });
 
-const parseLocalAcquisitionData = data => {
-  const test = data
-    .map(d => {
-      const date = parse(d["Date"], "dd/MM/yyyy", new Date());
-      return {
-        date,
-        timestamp: date.getTime(),
-        jurisdiction: d["State/territory"],
-        cumulative: +d["Cumulative cases"],
-        mode: d["Mode of transmission (Origins)"]
-      };
-    })
-    .filter(d => d.jurisdiction === "AUS")
+const mixinLocalAcquisitionData = data =>
+  data
+    .concat(
+      localAcquisitionsData.map(d => ({ ...d, date: new Date(d.timestamp) }))
+    )
     .sort((a, b) => ascending(a.timestamp, b.timestamp));
 
-  const rolled = rollups(
-    test,
-    v => sum(v, d => d.cumulative),
-    d => +d.date,
-    d => {
-      let key = "unknown";
-      switch (d.mode) {
-        case "Overseas":
-          key = "Australia (imported)";
-          break;
-        case "Local - known link":
-        case "Local - unknown link":
-        case "Local - unknown link, travelled interstate":
-          key = "Australia (local transmission)";
-          break;
-      }
-      return key;
-    }
-  );
-
-  return rolled.reduce((acc, [timestamp, data]) => {
-    return acc.concat(
-      data.map(([jurisdiction, cumulative]) => ({
-        date: new Date(timestamp),
-        timestamp,
-        jurisdiction,
-        cumulative
-      }))
-    );
-  }, []);
-};
-
-export const fetchLocalAcquisitionData = () =>
-  fetch(localAcquisitionDataUrl)
-    .then(res => res.text())
-    .then(csvParse);
-
-const mixinLocalAcquisitionData = data => {
-  return fetchLocalAcquisitionData()
-    .then(parseLocalAcquisitionData)
-    .then(lad =>
-      data.concat(lad).sort((a, b) => ascending(a.timestamp, b.timestamp))
-    );
-};
-
-export const fetchCountryTotals = ({ includeLocal = false } = {}) =>
+export const fetchCountryTotals = () =>
   fetch(dataUrl)
     .then(res => res.json())
     .then(Object.entries)
     .then(parseHybridData)
-    .then(includeLocal ? mixinLocalAcquisitionData : d => d)
+    .then(mixinLocalAcquisitionData)
     .then(groupByJurisdiction)
     .then(calculateNewCases)
     .catch(console.error);
