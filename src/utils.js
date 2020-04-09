@@ -47,10 +47,8 @@ export const calcNewCases = (d, i, arr) => ({
 });
 
 export const calculateNewCases = groups => {
-  const keys = Array.from(groups.keys());
   const mod = new Map();
-  keys.forEach(key => {
-    const data = groups.get(key);
+  groups.forEach((data, key) => {
     mod.set(key, data.map(calcNewCases));
   });
   return mod;
