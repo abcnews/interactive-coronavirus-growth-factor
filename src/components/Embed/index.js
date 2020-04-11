@@ -18,8 +18,8 @@ export const Embed = ({ jurisdiction, data, smoothing = 5 }) => {
   return (
     <div className={styles.embed}>
       <h1 className={styles.title}>
-        We need to keep growth factor <strong>below 1.0</strong> to stop the
-        exponential growth of COVID-19 cases
+        To control the COVID-19 outbreak we need to keep growth factor{" "}
+        <strong>below 1.0</strong>
       </h1>
       <CurrentLabel
         labelText={labelText}
