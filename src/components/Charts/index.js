@@ -76,7 +76,6 @@ export const GrowthFactorChart = ({
         className={`${styles.svg} ${highlight ? styles.hovered : ""}`}
         width={width + 30}
         height={height + 30}
-        style={{ bottom: 0, left: 0 }}
         ref={svgRef}
         onPointerMove={ev =>
           setHighlight(
@@ -87,7 +86,7 @@ export const GrowthFactorChart = ({
         }
         onPointerOut={() => setHighlight(null)}
       >
-        <g style={{ transform: "translate(15px, 15px)" }}>
+        <g transform={`matrix(1, 0, 0, 1, 15, 15)`}>
           <mask id={`bad-${uid}`}>
             <rect
               x={xRange[0] - 10}

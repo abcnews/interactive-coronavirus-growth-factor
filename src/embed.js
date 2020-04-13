@@ -1,5 +1,6 @@
 import "regenerator-runtime/runtime.js";
 import "core-js/features/symbol";
+import "core-js/features/symbol/iterator";
 import "./polyfills";
 import React from "react";
 import { render } from "react-dom";
