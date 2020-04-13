@@ -31,10 +31,18 @@ const renderEmbed = data =>
     anchorEl.parentElement.insertBefore(mountEl, anchorEl);
     anchorEl.parentElement.removeChild(anchorEl);
 
+    let jurisdictions = {};
+    data.forEach((data, key) => {
+      jurisdictions[key.toLowerCase().replace(/\s/g, "")] = key;
+    });
+
+    const jurisdiction = props.embed ? jurisdictions[props.embed] : "Australia";
+
     render(
       <Embed
-        jurisdiction={props.embed || "Australia"}
-        data={data.get(props.embed || "Australia")}
+        smoothing={props.smoothing || 5}
+        jurisdiction={jurisdiction}
+        data={data.get(jurisdiction)}
       />,
       mountEl
     );
