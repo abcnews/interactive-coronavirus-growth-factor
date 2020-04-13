@@ -6,6 +6,9 @@ export const dataUrl =
 export const localAcquisitionDataUrl =
   "https://covid-sheets-mirror.web.app/api?sheet=1nUUU5zPRPlhAXM_-8R7lsMnAkK4jaebvIL5agAaKoXk&range=Source%20of%20infection!A:D";
 
+export const storyUrl =
+  "https://www.abc.net.au/news/2020-04-09/coronavirus-data-australia-growth-factor-covid-19/12132478";
+
 export const presets = {
   local: {
     jurisdictions: [

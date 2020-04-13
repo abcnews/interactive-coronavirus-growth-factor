@@ -6,6 +6,7 @@ import React from "react";
 import { render } from "react-dom";
 import * as a2o from "@abcnews/alternating-case-to-object";
 import { fetchCountryTotals } from "./utils";
+import { storyUrl } from "./constants";
 import { Embed } from "./components/Embed";
 
 const domready = fn => {
@@ -43,6 +44,7 @@ const renderEmbed = data =>
         smoothing={props.smoothing || 5}
         jurisdiction={jurisdiction}
         data={data.get(jurisdiction)}
+        link={storyUrl}
       />,
       mountEl
     );
