@@ -2,11 +2,12 @@ import React from "react";
 import { growthFactorAccessor, growthFactorFormatter } from "../../utils";
 import { format } from "date-fns";
 import { least, greatest } from "d3-array";
+import { colours } from "../../constants";
 import styles from "./styles.scss";
 
-const Extreme = ({ data, label, className }) =>
+const Extreme = ({ data, label, color }) =>
   growthFactorAccessor(data) ? (
-    <dl className={className}>
+    <dl style={{ color }}>
       <dt>{label}</dt>
       <dd>
         <strong>{growthFactorFormatter(data.growthFactor)}</strong>{" "}
@@ -29,12 +30,12 @@ export const Extremes = ({ data, className, emphasise }) => {
         <Extreme
           data={data}
           label={label}
-          className={
+          color={
             emphasise
               ? data.growthFactor > 1
-                ? styles.bad
-                : styles.good
-              : null
+                ? colours.badText
+                : colours.goodText
+              : "inherit"
           }
           key={i}
         />

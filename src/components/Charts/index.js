@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import styles from "./styles.scss";
-import { GrowthRateTooltip, GrowthFactorTooltip } from "../Tooltips";
 import {
   movingAverage,
   growthRate,
@@ -13,21 +12,22 @@ import { line, curveMonotoneX } from "d3-shape";
 import { scaleLinear, scaleTime } from "d3-scale";
 import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
+import { colours } from "../../constants";
 
 export const GrowthFactorChart = ({
   data,
   height = 160,
   innerHeight = 50,
-  innerHeightDomain
+  innerHeightDomain,
+  shimColor
 }) => {
   const [ref, { x, y, width: chartWidth }] = useDimensions();
   const width = chartWidth ? chartWidth - 30 : 1;
   const [svgRef, svgDimensions] = useDimensions();
   const [highlight, setHighlight] = useState(null);
   const uid = useMemo(() => uuid(), [data]);
-  const good = "#159f8c";
-  const bad = "#EA526F";
-  const currentColour = data[data.length - 1].growthFactor < 1 ? good : bad;
+  const currentColour =
+    data[data.length - 1].growthFactor < 1 ? colours.good : colours.bad;
   const xDomain = extent(data, d => d.date);
   const xRange = [0, width];
   const yDomain = innerHeightDomain || [
@@ -108,7 +108,7 @@ export const GrowthFactorChart = ({
           <path
             d={path(data)}
             fill="none"
-            stroke={bad}
+            stroke={colours.bad}
             strokeWidth="2"
             mask={`url(#bad-${uid})`}
           />
@@ -116,7 +116,7 @@ export const GrowthFactorChart = ({
           <path
             d={path(data)}
             fill="none"
-            stroke={good}
+            stroke={colours.good}
             strokeWidth="2"
             mask={`url(#good-${uid})`}
           />
@@ -182,6 +182,7 @@ export const GrowthFactorChart = ({
         <div
           className={styles.tooltip}
           style={{
+            backgroundColor: shimColor,
             bottom: height - yScale(highlight.growthFactor) - 30,
             left: xScale(highlight.date) + 15,
             transform: "translate(-50%)"

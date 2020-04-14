@@ -7,7 +7,8 @@ import * as a2o from "@abcnews/alternating-case-to-object";
 import { fetchCountryTotals } from "./utils";
 import { SmallMultiples } from "./components/SmallMultiples";
 import { Hero } from "./components/Hero";
-import { presets } from "./constants";
+import { presets, colours } from "./constants";
+import "./fonts.scss";
 
 const whenOdysseyLoaded = new Promise(resolve =>
   window.__ODYSSEY__
@@ -48,4 +49,4 @@ Promise.all([fetchCountryTotals(), whenOdysseyLoaded]).then(([countryTotals]) =>
   renderSmallMultiples(countryTotals)
 );
 
-document.documentElement.style.setProperty("--bg", "rgb(243,252,252)");
+document.documentElement.style.setProperty("--bg", colours.background);

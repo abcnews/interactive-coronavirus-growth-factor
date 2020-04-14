@@ -1,12 +1,8 @@
-.embed {
-  --good: #159f8c;
-  --bad: #cc365b;
-  --bg: rgb(233, 247, 247);
-  --shim: rgba(233, 247, 247, 0.75);
+@import "../../constants";
 
-  font-family: "ABCSans", Helvetica, Arial, sans-serif;
+.embed {
+  font-family: $font-sans;
   font-size: 1rem;
-  background-color: var(--bg);
   padding: 15px;
   width: 100%;
   display: flex;

@@ -9,6 +9,17 @@ export const localAcquisitionDataUrl =
 export const storyUrl =
   "https://www.abc.net.au/news/2020-04-09/coronavirus-data-australia-growth-factor-covid-19/12132478";
 
+export const colours = {
+  background: "rgb(243, 252, 252)",
+  shim: "rgba(243, 252, 252, 0.75)",
+  embedBackground: "rgb(233, 247, 247)",
+  embedShim: "rgba(233, 247, 247, 0.75)",
+  good: "#159f8c",
+  bad: "#EA526F",
+  goodText: "#159f8c",
+  badText: "#cc365b"
+};
+
 export const presets = {
   local: {
     jurisdictions: [

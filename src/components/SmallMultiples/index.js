@@ -10,7 +10,7 @@ import { ascending } from "d3-array";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
-import { presets } from "../../constants";
+import { presets, colours } from "../../constants";
 
 export const SingleJurisdiction = ({
   jurisdiction,
@@ -31,7 +31,10 @@ export const SingleJurisdiction = ({
   );
 
   return (
-    <div className={styles.chart}>
+    <div
+      className={styles.chart}
+      style={{ backgroundColor: colours.background }}
+    >
       <h1 className={styles.title}>{jurisdictionName(jurisdiction)}</h1>
       <CurrentLabel
         labelText={labelText}
@@ -43,6 +46,7 @@ export const SingleJurisdiction = ({
         data={series.slice(-limit)}
         innerHeightDomain={[0.7, 2]}
         height={150}
+        shimColor={colours.shim}
       />
       <Extremes deempphasise={true} data={series} />
     </div>

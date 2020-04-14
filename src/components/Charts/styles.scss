@@ -1,3 +1,5 @@
+@import "../../constants";
+
 .current-value {
   margin: 0;
   font-size: 4rem;
@@ -59,7 +61,7 @@
     padding: 0 4px;
     border-radius: 3px;
     &:nth-child(2) {
-      font-family: ABCSerif;
+      font-family: $font-serif;
       font-weight: bold;
     }
   }

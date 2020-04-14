@@ -1,12 +1,12 @@
+@import "../../constants";
+
 .current {
-  --good: #159f8c;
-  --bad: #cc365b;
   position: relative;
   z-index: 3;
   display: flex;
   text-align: right;
   justify-content: flex-end;
-  font-family: "ABCSerif", "Book Antiqua", "Palatino Linotype", Palatino, serif;
+  font-family: $font-serif;
   font-size: 0.6875rem !important;
   pointer-events: none;
   margin: 0;
@@ -26,12 +26,6 @@
     margin-left: 0.4rem;
     position: relative;
     line-height: 1 !important;
-    &.good {
-      color: var(--good);
-    }
-    &.bad {
-      color: var(--bad);
-    }
   }
 
   &.first {

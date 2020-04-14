@@ -1,6 +1,6 @@
+@import "../../constants";
+
 .extremes {
-  --good: #159f8c;
-  --bad: #cc365b;
   font-size: 0.6875rem;
   display: flex;
   justify-content: center;
@@ -22,16 +22,8 @@
     margin: 0;
     padding: 0;
     strong {
-      font-family: ABCSerif;
+      font-family: $font-serif;
       font-size: 0.9375rem;
     }
   }
-}
-
-.good {
-  color: var(--good);
-}
-
-.bad {
-  color: var(--bad);
 }
