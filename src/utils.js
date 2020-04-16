@@ -6,7 +6,7 @@ import { csvParse } from "d3-dsv";
 import {
   dataUrl,
   jurisdictionsOfInterest,
-  localAcquisitionsData
+  localAcquisitionDataUrl
 } from "./constants";
 import { parse } from "date-fns";
 import { Embed } from "./components/Embed";
@@ -219,12 +219,21 @@ export const jurisdictionName = name => {
   return map.get(name) || name;
 };
 
-const mixinLocalAcquisitionData = data =>
-  data
-    .concat(
-      localAcquisitionsData.map(d => ({ ...d, date: new Date(d.timestamp) }))
-    )
-    .sort((a, b) => ascending(a.timestamp, b.timestamp));
+const mixinLocalAcquisitionData = data => {
+  return fetch(localAcquisitionDataUrl)
+    .then(res => res.json())
+    .then(localAcquisitionsData =>
+      data
+        .concat(
+          localAcquisitionsData.map(d => {
+            const date = new Date(d.date);
+            const timestamp = +date;
+            return { ...d, date, timestamp };
+          })
+        )
+        .sort((a, b) => ascending(a.timestamp, b.timestamp))
+    );
+};
 
 export const fetchCountryTotals = () =>
   fetch(dataUrl)
