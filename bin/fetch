@@ -2,3 +2,6 @@
 
 wget https://www.abc.net.au/dat/news/interactives/covid19-data/hybrid-country-totals.json
 mv ./hybrid-country-totals.json ./public/data
+
+wget https://www.abc.net.au/dat/news/interactives/covid19-data/dsi-local-acquisition.json
+mv ./dsi-local-acquisition.json ./public/data
