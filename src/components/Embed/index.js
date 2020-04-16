@@ -6,7 +6,13 @@ import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
 import { colours } from "../../constants";
 
-export const Embed = ({ jurisdiction, data, smoothing = 5, link = null }) => {
+export const Embed = ({
+  jurisdiction,
+  data,
+  smoothing = 5,
+  link = null,
+  limit = 30
+}) => {
   const series = addGrowthFactor(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
   const labelText = (
@@ -31,7 +37,7 @@ export const Embed = ({ jurisdiction, data, smoothing = 5, link = null }) => {
         first="true"
       />
       <GrowthFactorChart
-        data={series.slice(-30)}
+        data={series.slice(-limit)}
         height={200}
         innerHeight={60}
         shimColor={colours.embedShim}
