@@ -45,7 +45,7 @@ const renderEmbed = data =>
         limit={props.limit || 30}
         jurisdiction={jurisdiction}
         data={data.get(jurisdiction)}
-        link={storyUrl}
+        link={props.link == false ? null : storyUrl}
       />,
       mountEl
     );
