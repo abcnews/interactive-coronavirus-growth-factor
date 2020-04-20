@@ -11,7 +11,9 @@ export const Embed = ({
   data,
   smoothing = 5,
   link = null,
-  limit = 30
+  limit = 30,
+  height = 200,
+  innerheight = 60
 }) => {
   const series = addGrowthFactor(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
@@ -38,8 +40,8 @@ export const Embed = ({
       />
       <GrowthFactorChart
         data={series.slice(-limit)}
-        height={200}
-        innerHeight={60}
+        height={+height}
+        innerHeight={+innerheight}
         shimColor={colours.embedShim}
       />
       <Extremes data={series} emphasise={true} className={styles.extremes} />

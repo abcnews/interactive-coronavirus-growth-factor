@@ -41,8 +41,7 @@ const renderEmbed = data =>
 
     render(
       <Embed
-        smoothing={props.smoothing || 5}
-        limit={props.limit || 30}
+        {...props}
         jurisdiction={jurisdiction}
         data={data.get(jurisdiction)}
         link={props.link == false ? null : storyUrl}
