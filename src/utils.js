@@ -8,7 +8,7 @@ import {
   jurisdictionsOfInterest,
   localAcquisitionDataUrl
 } from "./constants";
-import { parse } from "date-fns";
+import { parse, parseISO } from "date-fns";
 import { Embed } from "./components/Embed";
 
 export const addNationalData = data => {
@@ -226,7 +226,7 @@ const mixinLocalAcquisitionData = data => {
       data
         .concat(
           localAcquisitionsData.map(d => {
-            const date = new Date(d.date);
+            const date = parseISO(d.date);
             const timestamp = +date;
             return { ...d, date, timestamp };
           })
