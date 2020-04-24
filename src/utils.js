@@ -53,23 +53,6 @@ export const calculateNewCases = groups => {
   });
   return mod;
 };
-
-export const parseDsiData = data => {
-  return data
-    .map(d => {
-      const date = parse(d["Date announced"], "dd/MM/yyyy", new Date());
-      return {
-        date,
-        timestamp: date.getTime(),
-        jurisdiction: d["State/territory"],
-        cumulative: +d["Cumulative confirmed"],
-        added: +d["New cases"]
-      };
-    })
-    .filter(d => d.cumulative > 0)
-    .sort((a, b) => ascending(a.timestamp, b.timestamp));
-};
-
 export const groupByJurisdiction = data => {
   const grouped = new Map();
   data.forEach(d => {
@@ -81,38 +64,6 @@ export const groupByJurisdiction = data => {
     }
   });
   return grouped;
-};
-
-export const findMissingDays = d => {
-  const minDay = min(d, d => d.timestamp);
-  const maxDay = max(d, d => d.timestamp);
-  const missing = [];
-
-  for (var day = minDay; day <= maxDay; day += 3600 * 24 * 1000) {
-    if (!d.filter(d => d.timestamp === day)) {
-      missing.push(day);
-    }
-  }
-
-  return missing;
-};
-
-export const findMiscalculations = d => {
-  const miscalculations = [];
-  for (var i = 1; i < d.length; i++) {
-    if (d[i - 1].cumulative + d[i].added !== d[i].cumulative) {
-      miscalculations.push(d[i].date);
-    }
-  }
-  return miscalculations;
-};
-
-// Trim the most recent day if it doesn't have figures for all jurisdictions.
-export const trimDsiData = data => {
-  const maxDay = max(data, d => d.timestamp);
-  return data.filter(d => d.timestamp === maxDay).length < 8
-    ? data.filter(d => d.timestamp !== maxDay)
-    : data;
 };
 
 export const movingAverage = (
@@ -130,25 +81,6 @@ export const movingAverage = (
               arr
                 .slice(i - smoothing + 1, i + 1)
                 .reduce((t, d) => t + accessor(d), 0) / smoothing,
-              d
-            )
-          ),
-    []
-  );
-
-export const growthRate = (
-  data,
-  period = 1,
-  accessor = d => d,
-  storer = v => v
-) =>
-  data.reduce(
-    (acc, d, i, arr) =>
-      i < period
-        ? acc
-        : acc.concat(
-            storer(
-              Math.pow(accessor(d) / accessor(arr[i - period]), 1 / period) - 1,
               d
             )
           ),
