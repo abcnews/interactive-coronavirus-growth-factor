@@ -11,7 +11,7 @@ export const Embed = ({
   data,
   smoothing = 5,
   link = null,
-  limit = 30,
+  days = 30,
   height = 200,
   innerheight = 60
 }) => {
@@ -39,7 +39,7 @@ export const Embed = ({
         first="true"
       />
       <GrowthFactorChart
-        data={series.slice(-limit)}
+        data={series.slice(-days)}
         height={+height}
         innerHeight={+innerheight}
         shimColor={colours.embedShim}

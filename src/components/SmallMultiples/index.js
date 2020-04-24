@@ -18,7 +18,7 @@ export const SingleJurisdiction = ({
   smoothing = 5,
   primary = false,
   first = false,
-  limit = 30
+  days = 30
 }) => {
   const series = addGrowthFactor(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
@@ -43,7 +43,7 @@ export const SingleJurisdiction = ({
         first={first}
       />
       <GrowthFactorChart
-        data={series.slice(-limit)}
+        data={series.slice(-days)}
         innerHeightDomain={[0.7, 2]}
         height={150}
         shimColor={colours.shim}
@@ -53,7 +53,7 @@ export const SingleJurisdiction = ({
   );
 };
 
-export const SmallMultiples = ({ preset, data, limit }) => {
+export const SmallMultiples = ({ preset, data, days }) => {
   const config = presets[preset];
   const dataArr = [];
   data.forEach((jurisdictionData, jurisdiction) =>
@@ -80,7 +80,7 @@ export const SmallMultiples = ({ preset, data, limit }) => {
             data={data}
             first={i === 0}
             primary={false}
-            limit={limit}
+            days={days}
           />
         ))}
     </div>

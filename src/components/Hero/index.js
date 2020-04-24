@@ -4,8 +4,9 @@ import { addGrowthFactor, growthFactorAccessor } from "../../utils";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
+import { colours } from "../../constants";
 
-export const Hero = ({ data, smoothing = 5 }) => {
+export const Hero = ({ data, smoothing = 5, days = 35, innerHeight = 100 }) => {
   const series = addGrowthFactor(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
   const labelText = (
@@ -22,7 +23,11 @@ export const Hero = ({ data, smoothing = 5 }) => {
         value={currentGrowthFactor}
         first={true}
       />
-      <GrowthFactorChart data={series.slice(-35)} innerHeight={100} />
+      <GrowthFactorChart
+        data={series.slice(-days)}
+        innerHeight={innerHeight}
+        shimColor={colours.shim}
+      />
       <Extremes data={series} className={styles.extremes} emphasise={true} />
     </div>
   );
