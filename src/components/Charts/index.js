@@ -1,12 +1,7 @@
 import React, { useState, useMemo } from "react";
 import styles from "./styles.scss";
-import {
-  movingAverage,
-  growthRate,
-  findGaps,
-  growthFactorFormatter
-} from "../../utils";
-import { pairs, extent, min, bisector } from "d3-array";
+import { findGaps, growthFactorFormatter } from "../../utils";
+import { extent, min, bisector } from "d3-array";
 import useDimensions from "react-use-dimensions";
 import { line, curveMonotoneX } from "d3-shape";
 import { scaleLinear, scaleTime } from "d3-scale";

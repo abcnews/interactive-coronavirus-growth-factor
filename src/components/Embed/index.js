@@ -1,21 +1,34 @@
 import React from "react";
 import styles from "./styles.scss";
-import { addGrowthFactor, growthFactorAccessor } from "../../utils";
+import {
+  addGrowthFactor,
+  growthFactorAccessor,
+  dailyGrowthFactorMapper,
+  getStorer,
+  getAccessor,
+  dataToSeries
+} from "../../utils";
+import {
+  colours,
+  defaultDaysToShow,
+  defaultSmoothingPeriod,
+  defaultInnerHeight,
+  defaultInnerHeightDomain
+} from "../../constants";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
-import { colours } from "../../constants";
 
 export const Embed = ({
   jurisdiction,
   data,
-  smoothing = 5,
+  smoothing = defaultSmoothingPeriod,
   link = null,
-  days = 30,
+  days = defaultDaysToShow,
   height = 200,
   innerheight = 60
 }) => {
-  const series = addGrowthFactor(data, smoothing);
+  const series = dataToSeries(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
   const labelText = (
     <>
@@ -42,6 +55,7 @@ export const Embed = ({
         data={series.slice(-days)}
         height={+height}
         innerHeight={+innerheight}
+        innerHeightDomain={defaultInnerHeightDomain}
         shimColor={colours.embedShim}
       />
       <Extremes data={series} emphasise={true} className={styles.extremes} />

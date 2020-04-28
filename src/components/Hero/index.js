@@ -1,13 +1,30 @@
 import React from "react";
 import styles from "./styles.scss";
-import { addGrowthFactor, growthFactorAccessor } from "../../utils";
+import {
+  growthFactorAccessor,
+  dailyGrowthFactorMapper,
+  getAccessor,
+  getStorer,
+  dataToSeries
+} from "../../utils";
+import {
+  colours,
+  defaultDaysToShow,
+  defaultSmoothingPeriod,
+  defaultInnerHeight,
+  defaultInnerHeightDomain
+} from "../../constants";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
-import { colours } from "../../constants";
 
-export const Hero = ({ data, smoothing = 5, days = 35, innerHeight = 100 }) => {
-  const series = addGrowthFactor(data, smoothing);
+export const Hero = ({
+  data,
+  smoothing = defaultSmoothingPeriod,
+  days = defaultDaysToShow,
+  innerHeight = defaultInnerHeight
+}) => {
+  const series = dataToSeries(data, smoothing);
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
   const labelText = (
     <>
@@ -26,6 +43,7 @@ export const Hero = ({ data, smoothing = 5, days = 35, innerHeight = 100 }) => {
       <GrowthFactorChart
         data={series.slice(-days)}
         innerHeight={innerHeight}
+        innerHeightDomain={defaultInnerHeightDomain}
         shimColor={colours.shim}
       />
       <Extremes data={series} className={styles.extremes} emphasise={true} />

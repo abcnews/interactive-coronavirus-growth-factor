@@ -11,6 +11,10 @@ export const localAcquisitionDataUrl =
 export const storyUrl =
   "https://www.abc.net.au/news/2020-04-09/coronavirus-data-australia-growth-factor-covid-19/12132478";
 
+export const defaultDaysToShow = 45;
+export const defaultSmoothingPeriod = 7;
+export const defaultInnerHeight = 100;
+export const defaultInnerHeightDomain = [0.8, 1.2];
 export const colours = {
   background: "rgb(243, 252, 252)",
   shim: "rgba(243, 252, 252, 0.75)",

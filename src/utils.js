@@ -1,22 +1,19 @@
-import * as a2o from "@abcnews/alternating-case-to-object";
-import React from "react";
-import { render } from "react-dom";
-import { sum, min, max, pairs, ascending } from "d3-array";
-import { csvParse } from "d3-dsv";
-import {
-  dataUrl,
-  jurisdictionsOfInterest,
-  localAcquisitionDataUrl
-} from "./constants";
+import { pairs, ascending } from "d3-array";
+import { dataUrl, localAcquisitionDataUrl } from "./constants";
 import { parse, parseISO } from "date-fns";
-import { Embed } from "./components/Embed";
+
+const identity = d => d;
+const sumReducer = (t, d) => t + d;
+
+export const getAccessor = key => d => d[key];
+export const getStorer = key => (v, d) => ({ ...d, [key]: v });
 
 export const addNationalData = data => {
   return data.concat(
     Array.from(
       rollup(
         data,
-        v => sum(v, d => d.cumulative),
+        v => v.map(d => d.cumulative).reduce(sumReducer),
         d => d.timestamp
       )
     ).map((d, i, arr) => ({
@@ -66,51 +63,8 @@ export const groupByJurisdiction = data => {
   return grouped;
 };
 
-export const movingAverage = (
-  data,
-  smoothing = 1,
-  accessor = d => d,
-  storer = v => v
-) =>
-  data.reduce(
-    (acc, d, i, arr) =>
-      i < smoothing - 1
-        ? acc
-        : acc.concat(
-            storer(
-              arr
-                .slice(i - smoothing + 1, i + 1)
-                .reduce((t, d) => t + accessor(d), 0) / smoothing,
-              d
-            )
-          ),
-    []
-  );
-
-export const growthFactor = (data, accessor = d => d) =>
-  pairs(data, (a, b) => ({
-    ...b,
-    growthFactor: accessor(a) < 5 ? null : accessor(b) / accessor(a)
-  }));
-
 export const growthFactorAccessor = d => d && d.growthFactor;
 export const growthFactorFormatter = d => (d ? d.toFixed(2) : "-");
-
-export const addGrowthFactor = (data, smoothing = 1) =>
-  growthFactor(
-    movingAverage(
-      data,
-      smoothing,
-      d => d.added,
-      (v, { date, cumulative, added }) => ({
-        date,
-        cumulative,
-        new: added,
-        added: v
-      })
-    ),
-    d => d.added
-  );
 
 export const findGaps = data => {
   return pairs(
@@ -126,29 +80,51 @@ export const findGaps = data => {
   ).filter((d, i) => i % 2 === 0);
 };
 
-export const sanityChecks = data => {
-  Array.from(groupByJurisdiction(data)).forEach(([jurisdiction, data]) => {
-    const missing = findMissingDays(data);
-    if (missing.length > 0) {
-      console.error(`Missing days for ${jurisdiction}: ${missing.join(", ")}`);
-    }
-
-    const miscalculations = findMiscalculations(data);
-    if (miscalculations.length > 0) {
-      console.error(
-        `Miscalculations for ${jurisdiction} on the following days: ${miscalculations.join(
-          ", "
-        )}`
-      );
-    }
-  });
-};
-
 export const jurisdictionName = name => {
   const map = new Map();
   map.set("Korea, South", "South Korea");
   map.set("US", "United States");
   return map.get(name) || name;
+};
+
+export const dailyGrowthFactorMapper = ({
+  accessor = identity,
+  storer = identity,
+  smoothing = 1,
+  viabilityThreshold = 1,
+  daily = false
+}) => (d, i, arr) => {
+  // Can't calculate until we have smoothing * 2 days to work with
+  if (i < smoothing * 2) {
+    return storer(null, d);
+  }
+
+  // Get numerator and denominator
+  const numerator = arr
+    .slice(i + 1 - smoothing, i + 1)
+    .map(accessor)
+    .reduce(sumReducer);
+
+  const denominator = arr
+    .slice(i + 1 - smoothing * 2, i + 1 - smoothing)
+    .map(accessor)
+    .reduce(sumReducer);
+
+  // Check for viability
+  // Don't calculate a growth factor unless the denominator and numerator both reach a lowerBound
+  if (
+    numerator / smoothing < viabilityThreshold ||
+    denominator / smoothing < viabilityThreshold
+  ) {
+    return storer(null, d);
+  }
+
+  // Make it daily
+  const result = daily
+    ? Math.pow(numerator / denominator, 1 / smoothing)
+    : numerator / denominator;
+
+  return storer(result, d);
 };
 
 const mixinLocalAcquisitionData = data => {
@@ -165,6 +141,19 @@ const mixinLocalAcquisitionData = data => {
         )
         .sort((a, b) => ascending(a.timestamp, b.timestamp))
     );
+};
+
+export const dataToSeries = (data, smoothing) => {
+  const daily = true;
+  const accessor = getAccessor("added");
+  return data.map(
+    dailyGrowthFactorMapper({
+      smoothing,
+      accessor,
+      storer: getStorer("growthFactor"),
+      daily
+    })
+  );
 };
 
 export const fetchCountryTotals = () =>

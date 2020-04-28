@@ -1,26 +1,37 @@
 import React from "react";
 import styles from "./styles.scss";
 import {
-  addGrowthFactor,
   growthFactorAccessor,
   jurisdictionName,
-  filterByJurisdiction
+  filterByJurisdiction,
+  dailyGrowthFactorMapper,
+  getAccessor,
+  getStorer,
+  dataToSeries
 } from "../../utils";
+import {
+  presets,
+  colours,
+  defaultDaysToShow,
+  defaultSmoothingPeriod,
+  defaultInnerHeight,
+  defaultInnerHeightDomain
+} from "../../constants";
 import { ascending } from "d3-array";
 import { GrowthFactorChart } from "../Charts";
 import { Extremes } from "../Extremes";
 import { CurrentLabel } from "../CurrentLabel";
-import { presets, colours } from "../../constants";
 
-export const SingleJurisdiction = ({
+const SingleJurisdiction = ({
   jurisdiction,
   data,
-  smoothing = 5,
+  smoothing = defaultSmoothingPeriod,
   primary = false,
   first = false,
-  days = 30
+  days = defaultDaysToShow
 }) => {
-  const series = addGrowthFactor(data, smoothing);
+  const series = dataToSeries(data, smoothing);
+
   const currentGrowthFactor = growthFactorAccessor(series[series.length - 1]);
   const labelText = (
     <>
@@ -44,7 +55,7 @@ export const SingleJurisdiction = ({
       />
       <GrowthFactorChart
         data={series.slice(-days)}
-        innerHeightDomain={[0.7, 2]}
+        innerHeightDomain={defaultInnerHeightDomain}
         height={150}
         shimColor={colours.shim}
       />
