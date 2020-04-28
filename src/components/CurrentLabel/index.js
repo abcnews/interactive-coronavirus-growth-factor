@@ -19,7 +19,14 @@ export const CurrentLabel = ({
       <span>{labelText}</span>
       <span
         className={`${styles.keyNumber}`}
-        style={{ color: +value.toFixed(2) < 1 ? goodText : badText }}
+        style={{
+          color:
+            value === null
+              ? "#a5b3b6"
+              : +value.toFixed(2) < 1
+              ? goodText
+              : badText
+        }}
       >
         {growthFactorFormatter(value)}
       </span>
