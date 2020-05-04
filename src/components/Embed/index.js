@@ -6,7 +6,8 @@ import {
   dailyGrowthFactorMapper,
   getStorer,
   getAccessor,
-  dataToSeries
+  dataToSeries,
+  getAvgNewCases
 } from "../../utils";
 import {
   colours,
@@ -25,7 +26,7 @@ export const Embed = ({
   smoothing = defaultSmoothingPeriod,
   link = null,
   days = defaultDaysToShow,
-  height = 200,
+  height = 300,
   innerheight = 60
 }) => {
   const series = dataToSeries(data, smoothing);
@@ -55,13 +56,14 @@ export const Embed = ({
         data={series.slice(-days)}
         height={+height}
         innerHeight={+innerheight}
-        innerHeightDomain={defaultInnerHeightDomain}
+        innerHeightDomain={[0.9, 1.15]}
         shimColor={colours.embedShim}
+        latest={getAvgNewCases(data, smoothing)}
       />
       <Extremes data={series} emphasise={true} className={styles.extremes} />
       {link ? (
         <a className={styles.more} href={link}>
-          Find out more
+          Find out more →
         </a>
       ) : null}
     </div>

@@ -14,10 +14,6 @@
   z-index: 1;
 }
 
-.extremes {
-  margin-top: -1.2rem !important;
-}
-
 .title {
   position: relative;
   z-index: 3;
@@ -39,15 +35,15 @@
 [class*="u-richtext"] .more:link,
 [class*="u-richtext"] .more:visited {
   display: block;
-  border: 2px solid #000;
-  border-radius: 3px;
-  margin: 15px 10px;
-  padding: 12px;
   text-transform: uppercase;
   font-weight: bold;
   font-size: 0.75rem;
+  text-align: right;
+  padding: 1rem 0;
+  margin: 0 0 -1rem;
   color: #000;
   text-decoration: none;
+  z-index: 4;
 }
 
 .footer {

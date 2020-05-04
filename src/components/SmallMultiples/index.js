@@ -7,7 +7,8 @@ import {
   dailyGrowthFactorMapper,
   getAccessor,
   getStorer,
-  dataToSeries
+  dataToSeries,
+  getAvgNewCases
 } from "../../utils";
 import {
   presets,
@@ -56,8 +57,9 @@ const SingleJurisdiction = ({
       <GrowthFactorChart
         data={series.slice(-days)}
         innerHeightDomain={defaultInnerHeightDomain}
-        height={150}
+        height={250}
         shimColor={colours.shim}
+        latest={getAvgNewCases(data, smoothing)}
       />
       <Extremes deempphasise={true} data={series} />
     </div>

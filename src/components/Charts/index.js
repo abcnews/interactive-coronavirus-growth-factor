@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import styles from "./styles.scss";
-import { findGaps, growthFactorFormatter } from "../../utils";
+import { findGaps, growthFactorFormatter, formatNumber } from "../../utils";
 import { extent, min, bisector } from "d3-array";
 import useDimensions from "react-use-dimensions";
 import { line, curveMonotoneX } from "d3-shape";
@@ -11,10 +11,11 @@ import { colours } from "../../constants";
 
 export const GrowthFactorChart = ({
   data,
-  height = 160,
+  height = 260,
   innerHeight = 50,
   innerHeightDomain,
-  shimColor
+  shimColor,
+  latest
 }) => {
   const [ref, { x, y, width: chartWidth }] = useDimensions();
   const width = chartWidth ? chartWidth - 30 : 1;
@@ -85,7 +86,7 @@ export const GrowthFactorChart = ({
         }
         onPointerOut={() => setHighlight(null)}
       >
-        <g transform={`matrix(1, 0, 0, 1, 15, 15)`}>
+        <g transform={`matrix(1, 0, 0, 1, 15, -85)`}>
           <mask id={`bad-${uid}`}>
             <rect
               x={xRange[0] - 10}
@@ -167,14 +168,37 @@ export const GrowthFactorChart = ({
       </svg>
       <div
         className={styles.tickLabel}
-        style={{ left: 15, transform: "translate(-50%)" }}
+        style={{
+          left: 15,
+          transform: "translate(-50%)",
+          backgroundColor: shimColor
+        }}
       >
         {format(xDomain[0], "MMM d")}
       </div>
       <div
         className={styles.tickLabel}
-        style={{ right: 15, transform: "translate(50%)" }}
+        style={{
+          right: 15,
+          transform: "translate(50%)",
+          backgroundColor: shimColor
+        }}
       >
+        <div
+          style={{
+            position: "absolute",
+            right: "100%",
+            paddingRight: "0.3em",
+            whiteSpace: "nowrap",
+            backgroundColor: shimColor
+          }}
+        >
+          Avg.{" "}
+          <strong style={{ color: "#000" }}>
+            {formatNumber(latest.avg)} cases per day
+          </strong>{" "}
+          for the {latest.days} days to{" "}
+        </div>
         {format(xDomain[1], "MMM d")}
       </div>
       {highlight && highlight.growthFactor ? (

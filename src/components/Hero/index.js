@@ -5,7 +5,8 @@ import {
   dailyGrowthFactorMapper,
   getAccessor,
   getStorer,
-  dataToSeries
+  dataToSeries,
+  getAvgNewCases
 } from "../../utils";
 import {
   colours,
@@ -45,6 +46,7 @@ export const Hero = ({
         innerHeight={innerHeight}
         innerHeightDomain={defaultInnerHeightDomain}
         shimColor={colours.shim}
+        latest={getAvgNewCases(data, smoothing)}
       />
       <Extremes data={series} className={styles.extremes} emphasise={true} />
     </div>

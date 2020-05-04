@@ -153,6 +153,19 @@ export const dataToSeries = (data, smoothing) => {
   );
 };
 
+export const getAvgNewCases = (data, smoothing) => {
+  return {
+    avg: Math.round(
+      data.slice(-smoothing).reduce((t, d) => t + d.added, 0) / smoothing,
+      0
+    ),
+    days: smoothing
+  };
+};
+
+export const formatNumber = n =>
+  n.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
 export const fetchCountryTotals = () =>
   fetch(dataUrl)
     .then(res => res.json())
