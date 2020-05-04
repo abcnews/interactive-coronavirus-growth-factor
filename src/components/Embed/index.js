@@ -44,8 +44,8 @@ export const Embed = ({
       style={{ backgroundColor: colours.embedBackground }}
     >
       <h1 className={styles.title}>
-        To control the COVID-19 outbreak we need to keep growth factor{" "}
-        <strong>below 1.0</strong>
+        To keep the COVID-19 outbreak under control we need to keep growth
+        factor <strong>below 1.0</strong>
       </h1>
       <CurrentLabel
         labelText={labelText}
