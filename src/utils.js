@@ -92,7 +92,7 @@ export const dailyGrowthFactorMapper = ({
   storer = identity,
   smoothing = 1,
   viabilityThreshold = 1,
-  daily = false
+  daily = true
 }) => (d, i, arr) => {
   // Can't calculate until we have smoothing * 2 days to work with
   if (i < smoothing * 2) {
