@@ -112,10 +112,7 @@ export const dailyGrowthFactorMapper = ({
 
   // Check for viability
   // Don't calculate a growth factor unless the denominator and numerator both reach a lowerBound
-  if (
-    numerator / smoothing < viabilityThreshold ||
-    denominator / smoothing < viabilityThreshold
-  ) {
+  if (numerator < viabilityThreshold || denominator < viabilityThreshold) {
     return storer(null, d);
   }
 
