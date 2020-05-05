@@ -14,7 +14,7 @@ export const storyUrl =
 export const defaultDaysToShow = 45;
 export const defaultSmoothingPeriod = 7;
 export const defaultInnerHeight = 100;
-export const defaultInnerHeightDomain = [0.8, 1.2];
+export const defaultInnerHeightDomain = [0.85, 1.2];
 export const colours = {
   background: "rgb(243, 252, 252)",
   shim: "rgba(243, 252, 252, 0.75)",
