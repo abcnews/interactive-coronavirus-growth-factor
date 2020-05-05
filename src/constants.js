@@ -58,5 +58,23 @@ export const presets = {
       "Ireland",
       "Norway"
     ]
+  },
+  stuu: {
+    jurisdictions: ["US", "United Kingdom", "Turkey", "Switzerland"]
+  },
+  rsss: {
+    jurisdictions: ["Spain", "Korea, South", "Russia", "Sweden"]
+  },
+  nnnp: {
+    jurisdictions: ["Netherlands", "Portugal", "New Zealand", "Norway"]
+  },
+  iiii: {
+    jurisdictions: ["Iran", "Ireland", "Israel", "Italy"]
+  },
+  cfgi: {
+    jurisdictions: ["Germany", "France", "China", "Indonesia"]
+  },
+  abbc: {
+    jurisdictions: ["Belgium", "Canada", "Brazil", "Austria"]
   }
 };
