@@ -63,158 +63,157 @@ export const GrowthFactorChart = ({
     .defined(d => d.growthFactor !== null)
     .curve(curveMonotoneX);
   return (
-    <div
-      ref={ref}
-      style={{
-        height: innerHeight,
-        position: "relative",
-        marginBottom: "1.1em",
-        zIndex: highlight ? 4 : 1
-      }}
-    >
-      <svg
-        className={`${styles.svg} ${highlight ? styles.hovered : ""}`}
-        width={width + 30}
-        height={height + 30}
-        ref={svgRef}
-        onPointerMove={ev =>
-          setHighlight(
-            data[
-              bisectDate(data, xScale.invert(ev.clientX - svgDimensions.x - 15))
-            ]
-          )
-        }
-        onPointerOut={() => setHighlight(null)}
+    <>
+      <div
+        ref={ref}
+        style={{
+          height: innerHeight,
+          position: "relative",
+          marginBottom: "1.1em",
+          zIndex: highlight ? 4 : 1
+        }}
       >
-        <g transform={`matrix(1, 0, 0, 1, 15, -85)`}>
-          <mask id={`bad-${uid}`}>
-            <rect
-              x={xRange[0] - 10}
-              y={0}
-              width={width + 20}
-              height={yScale(1)}
-              fill="white"
+        <svg
+          className={`${styles.svg} ${highlight ? styles.hovered : ""}`}
+          width={width + 30}
+          height={height + 30}
+          ref={svgRef}
+          onPointerMove={ev =>
+            setHighlight(
+              data[
+                bisectDate(
+                  data,
+                  xScale.invert(ev.clientX - svgDimensions.x - 15)
+                )
+              ]
+            )
+          }
+          onPointerOut={() => setHighlight(null)}
+        >
+          <g transform={`matrix(1, 0, 0, 1, 15, -85)`}>
+            <mask id={`bad-${uid}`}>
+              <rect
+                x={xRange[0] - 10}
+                y={0}
+                width={width + 20}
+                height={yScale(1)}
+                fill="white"
+              />
+            </mask>
+            <mask id={`good-${uid}`}>
+              <rect
+                x={xRange[0] - 10}
+                y={yScale(1)}
+                width={width + 20}
+                height={yScale(1)}
+                fill="white"
+              />
+            </mask>
+            <path
+              d={path(data)}
+              fill="none"
+              stroke={colours.bad}
+              strokeWidth="2"
+              mask={`url(#bad-${uid})`}
             />
-          </mask>
-          <mask id={`good-${uid}`}>
-            <rect
-              x={xRange[0] - 10}
-              y={yScale(1)}
-              width={width + 20}
-              height={yScale(1)}
-              fill="white"
+
+            <path
+              d={path(data)}
+              fill="none"
+              stroke={colours.good}
+              strokeWidth="2"
+              mask={`url(#good-${uid})`}
             />
-          </mask>
-          <path
-            d={path(data)}
-            fill="none"
-            stroke={colours.bad}
-            strokeWidth="2"
-            mask={`url(#bad-${uid})`}
-          />
 
-          <path
-            d={path(data)}
-            fill="none"
-            stroke={colours.good}
-            strokeWidth="2"
-            mask={`url(#good-${uid})`}
-          />
+            {gaps.map((pos, i) => (
+              <line {...pos} key={`gap${i}`} className={styles.gap} />
+            ))}
 
-          {gaps.map((pos, i) => (
-            <line {...pos} key={`gap${i}`} className={styles.gap} />
-          ))}
-
-          <line
-            className={styles.tick}
-            x1={width}
-            y1={height + 15}
-            x2={width}
-            y2={height + 5}
-          />
-          <line
-            className={styles.tick}
-            x1={0}
-            y1={height + 15}
-            x2={0}
-            y2={height + 5}
-          />
-          <line
-            x1={xScale(xDomain[1])}
-            x2={xScale(xDomain[1])}
-            y1={yScale(data[data.length - 1].growthFactor) - 7}
-            y2={Math.min(
-              yScale(data[data.length - 1].growthFactor) - 7,
-              height - innerHeight + 15
-            )}
-            stroke={currentColour}
-          />
-          {highlight && highlight.growthFactor ? (
             <line
               className={styles.tick}
-              x1={xScale(highlight.date)}
-              x2={xScale(highlight.date)}
-              y1={yScale(highlight.growthFactor) + 5}
-              y2={yScale(highlight.growthFactor) + 15}
+              x1={width}
+              y1={height + 15}
+              x2={width}
+              y2={height + 5}
             />
-          ) : null}
-          <circle
-            r="3"
-            cx={xScale(xDomain[1])}
-            cy={yScale(data[data.length - 1].growthFactor)}
-            fill={currentColour}
-          />
-        </g>
-      </svg>
-      <div
-        className={styles.tickLabel}
-        style={{
-          left: 15,
-          transform: "translate(-50%)",
-          backgroundColor: shimColor
-        }}
-      >
-        {format(xDomain[0], "MMM d")}
-      </div>
-      <div
-        className={styles.tickLabel}
-        style={{
-          right: 15,
-          transform: "translate(50%)",
-          backgroundColor: shimColor
-        }}
-      >
+            <line
+              className={styles.tick}
+              x1={0}
+              y1={height + 15}
+              x2={0}
+              y2={height + 5}
+            />
+            <line
+              x1={xScale(xDomain[1])}
+              x2={xScale(xDomain[1])}
+              y1={yScale(data[data.length - 1].growthFactor) - 7}
+              y2={Math.min(
+                yScale(data[data.length - 1].growthFactor) - 7,
+                height - innerHeight + 15
+              )}
+              stroke={currentColour}
+            />
+            {highlight && highlight.growthFactor ? (
+              <line
+                className={styles.tick}
+                x1={xScale(highlight.date)}
+                x2={xScale(highlight.date)}
+                y1={yScale(highlight.growthFactor) + 5}
+                y2={yScale(highlight.growthFactor) + 15}
+              />
+            ) : null}
+            <circle
+              r="3"
+              cx={xScale(xDomain[1])}
+              cy={yScale(data[data.length - 1].growthFactor)}
+              fill={currentColour}
+            />
+          </g>
+        </svg>
         <div
+          className={styles.tickLabel}
           style={{
-            position: "absolute",
-            right: "100%",
-            paddingRight: "0.3em",
-            whiteSpace: "nowrap",
+            left: 15,
+            transform: "translate(-50%)",
             backgroundColor: shimColor
           }}
         >
-          Avg.{" "}
+          {format(xDomain[0], "MMM d")}
+        </div>
+        <div
+          className={styles.tickLabel}
+          style={{
+            right: 15,
+            transform: "translate(50%)",
+            backgroundColor: shimColor
+          }}
+        >
+          {format(xDomain[1], "MMM d")}
+        </div>
+        {highlight && highlight.growthFactor ? (
+          <div
+            className={styles.tooltip}
+            style={{
+              backgroundColor: shimColor,
+              bottom: height - yScale(highlight.growthFactor) - 30,
+              left: xScale(highlight.date) + 15,
+              transform: "translate(-50%)"
+            }}
+          >
+            <span>{format(highlight.date, "MMM d")}</span>
+            <span>{growthFactorFormatter(highlight.growthFactor)}</span>
+          </div>
+        ) : null}
+      </div>
+      <p className={styles.latest} style={{ backgroundColor: shimColor }}>
+        <span>
+          Average{" "}
           <strong style={{ color: "#000" }}>
             {formatNumber(latest.avg)} cases per day
           </strong>{" "}
-          for the {latest.days} days to{" "}
-        </div>
-        {format(xDomain[1], "MMM d")}
-      </div>
-      {highlight && highlight.growthFactor ? (
-        <div
-          className={styles.tooltip}
-          style={{
-            backgroundColor: shimColor,
-            bottom: height - yScale(highlight.growthFactor) - 30,
-            left: xScale(highlight.date) + 15,
-            transform: "translate(-50%)"
-          }}
-        >
-          <span>{format(highlight.date, "MMM d")}</span>
-          <span>{growthFactorFormatter(highlight.growthFactor)}</span>
-        </div>
-      ) : null}
-    </div>
+        </span>{" "}
+        <span>for the past {latest.days} days</span>
+      </p>
+    </>
   );
 };

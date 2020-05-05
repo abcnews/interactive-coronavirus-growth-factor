@@ -67,3 +67,11 @@
     }
   }
 }
+
+.latest {
+  font-size: 0.8rem;
+  line-height: normal;
+  > span {
+    white-space: nowrap;
+  }
+}
