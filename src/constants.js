@@ -8,6 +8,9 @@ export const localAcquisitionDataUrl =
     ? "/data/dsi-local-acquisition.json"
     : "https://www.abc.net.au/dat/news/interactives/covid19-data/dsi-local-acquisition.json";
 
+export const australianDataUrl =
+  "https://covid-sheets-mirror.web.app/api?sheet=1nUUU5zPRPlhAXM_-8R7lsMnAkK4jaebvIL5agAaKoXk&range=Daily%20Count%20States!A:E";
+
 export const storyUrl =
   "https://www.abc.net.au/news/2020-04-09/coronavirus-data-australia-growth-factor-covid-19/12132478";
 

@@ -1,6 +1,11 @@
 import { pairs, ascending } from "d3-array";
-import { dataUrl, localAcquisitionDataUrl } from "./constants";
+import {
+  dataUrl,
+  localAcquisitionDataUrl,
+  australianDataUrl
+} from "./constants";
 import { parse, parseISO } from "date-fns";
+import { csvParse } from "d3-dsv";
 
 const identity = d => d;
 const sumReducer = (t, d) => t + d;
@@ -50,18 +55,21 @@ export const calculateNewCases = groups => {
   });
   return mod;
 };
-export const groupByJurisdiction = data => {
+
+const groupBy = accessor => data => {
   const grouped = new Map();
   data.forEach(d => {
-    let group = grouped.get(d.jurisdiction);
+    let group = grouped.get(accessor(d));
     if (group) {
       group.push(d);
     } else {
-      grouped.set(d.jurisdiction, [d]);
+      grouped.set(accessor(d), [d]);
     }
   });
   return grouped;
 };
+
+export const groupByJurisdiction = groupBy(d => d.jurisdiction);
 
 export const growthFactorAccessor = d => d && d.growthFactor;
 export const growthFactorFormatter = d => (d ? d.toFixed(2) : "-");
@@ -140,6 +148,61 @@ const mixinLocalAcquisitionData = data => {
     );
 };
 
+const promiseChainSpy = d => {
+  console.log(d);
+  return d;
+};
+
+const groupByDate = groupBy(d => d["Date announced"]);
+
+const mapMap = cb => map => {
+  const newMap = new Map();
+  let i = 0;
+  map.forEach((data, key) => {
+    newMap.set(key, cb(data, key, i++));
+  });
+  return newMap;
+};
+
+const mixinAustralianData = data => {
+  return fetch(australianDataUrl)
+    .then(res => res.text())
+    .then(csvParse)
+    .then(groupByDate)
+    .then(
+      mapMap((data, key, index) => {
+        let incomplete = false;
+        const added = data.reduce((total, d) => {
+          const added = d["New cases"];
+          if (added === "") {
+            incomplete = true;
+          }
+          return total + +added;
+        }, 0);
+        return { incomplete, added };
+      })
+    )
+    .then(auData => {
+      const auDataArray = [];
+      auData.forEach((d, key) => {
+        const date = parse(key, "dd/MM/yyyy", new Date());
+        auDataArray.push({
+          added: d,
+          date,
+          jurisdiction: "Australia",
+          timestamp: date.getTime()
+        });
+      });
+      return data.set(
+        "Australia",
+        auDataArray
+          .filter((d, i) => !d.added.incomplete || i > 0)
+          .map(d => ({ ...d, added: d.added.added }))
+          .reverse()
+      );
+    });
+};
+
 export const dataToSeries = (data, smoothing) => {
   const daily = true;
   const accessor = getAccessor("added");
@@ -171,7 +234,7 @@ export const fetchCountryTotals = () =>
     .then(res => res.json())
     .then(Object.entries)
     .then(parseHybridData)
-    .then(mixinLocalAcquisitionData)
     .then(groupByJurisdiction)
     .then(calculateNewCases)
+    .then(mixinAustralianData)
     .catch(console.error);
