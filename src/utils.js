@@ -4,7 +4,6 @@ import {
   localAcquisitionDataUrl,
   australianDataUrl
 } from "./constants";
-import { parse, parseISO } from "date-fns";
 import { csvParse } from "d3-dsv";
 
 const identity = d => d;
@@ -35,7 +34,8 @@ export const parseHybridData = data => {
   return data
     .reduce((acc, [jurisdiction, values]) => {
       const objs = Object.entries(values).map(([dateString, cumulative]) => {
-        const date = parse(dateString, "yyyy-MM-dd", new Date());
+        const [y, m, d] = dateString.split("-").map(d => +d);
+        const date = new Date(y, m - 1, d);
         return { date, timestamp: date.getTime(), jurisdiction, cumulative };
       });
       return acc.concat(objs);
@@ -138,10 +138,11 @@ const mixinLocalAcquisitionData = data => {
     .then(localAcquisitionsData =>
       data
         .concat(
-          localAcquisitionsData.map(d => {
-            const date = parseISO(d.date);
+          localAcquisitionsData.map(data => {
+            const [y, m, d] = data.date.split("-").map(d => +d);
+            const date = new Date(y, m - 1, d);
             const timestamp = +date;
-            return { ...d, date, timestamp };
+            return { ...data, date, timestamp };
           })
         )
         .sort((a, b) => ascending(a.timestamp, b.timestamp))
@@ -184,10 +185,11 @@ const mixinAustralianData = data => {
     )
     .then(auData => {
       const auDataArray = [];
-      auData.forEach((d, key) => {
-        const date = parse(key, "dd/MM/yyyy", new Date());
+      auData.forEach((added, key) => {
+        const [d, m, y] = key.split("/").map(d => +d);
+        const date = new Date(y, m - 1, d);
         auDataArray.push({
-          added: d,
+          added,
           date,
           jurisdiction: "Australia",
           timestamp: date.getTime()
