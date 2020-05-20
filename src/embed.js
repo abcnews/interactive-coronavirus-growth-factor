@@ -3,8 +3,7 @@ import "core-js/features/symbol";
 import "core-js/features/symbol/iterator";
 import "./polyfills";
 
-import * as a2o from "@abcnews/alternating-case-to-object";
-import { fetchCountryTotals } from "./utils";
+import { fetchAll } from "./data";
 import {
   renderSmallMultiples,
   whenOdysseyLoaded,
@@ -13,9 +12,9 @@ import {
 } from "./renderers";
 import "./fonts.scss";
 
-fetchCountryTotals().then(countryTotals =>
+fetchAll().then(data =>
   domready(() => {
-    renderSmallMultiples(countryTotals);
-    renderEmbed(countryTotals);
+    renderSmallMultiples(data);
+    renderEmbed(data);
   })
 );
