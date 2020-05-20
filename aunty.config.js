@@ -14,7 +14,10 @@ module.exports = {
 
     scriptsRule.include.push(
       resolve(__dirname, "node_modules/d3-array"),
-      resolve(__dirname, "node_modules/d3-scale")
+      resolve(__dirname, "node_modules/d3-dsv"),
+      resolve(__dirname, "node_modules/d3-path"),
+      resolve(__dirname, "node_modules/d3-scale"),
+      resolve(__dirname, "node_modules/d3-shape")
     );
 
     rules.unshift({
