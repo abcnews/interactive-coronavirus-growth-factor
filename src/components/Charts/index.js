@@ -5,9 +5,10 @@ import { extent, min, bisector } from "d3-array";
 import useDimensions from "react-use-dimensions";
 import { line, curveMonotoneX } from "d3-shape";
 import { scaleLinear, scaleTime } from "d3-scale";
-import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
-import { colours } from "../../constants";
+import { colours, shortMonths } from "../../constants";
+
+const formatDate = date => `${shortMonths[date.getMonth()]} ${date.getDate()}`;
 
 export const GrowthFactorChart = ({
   data,
@@ -178,7 +179,7 @@ export const GrowthFactorChart = ({
             backgroundColor: shimColor
           }}
         >
-          {format(xDomain[0], "MMM d")}
+          {formatDate(xDomain[0])}
         </div>
         <div
           className={styles.tickLabel}
@@ -188,7 +189,7 @@ export const GrowthFactorChart = ({
             backgroundColor: shimColor
           }}
         >
-          {format(xDomain[1], "MMM d")}
+          {formatDate(xDomain[1])}
         </div>
         {highlight && highlight.growthFactor ? (
           <div
@@ -200,7 +201,7 @@ export const GrowthFactorChart = ({
               transform: "translate(-50%)"
             }}
           >
-            <span>{format(highlight.date, "MMM d")}</span>
+            <span>{formatDate(highlight.date)}</span>
             <span>{growthFactorFormatter(highlight.growthFactor)}</span>
           </div>
         ) : null}
