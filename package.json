@@ -36,6 +36,7 @@
 	},
 	"dependencies": {
 		"@abcnews/alternating-case-to-object": "^2.0.0",
+		"@abcnews/story-lab-component-library": "^1.0.0-pre",
 		"core-js": "^3.6.5",
 		"d3-array": "^2.4.0",
 		"d3-dsv": "^1.2.0",

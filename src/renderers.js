@@ -4,7 +4,7 @@ import * as a2o from "@abcnews/alternating-case-to-object";
 import { SmallMultiples } from "./components/SmallMultiples";
 import { Hero } from "./components/Hero";
 import { Embed } from "./components/Embed";
-import { EmbedContainer } from "story-lab-component-library";
+import { EmbedContainer } from "@abcnews/story-lab-component-library";
 import { storyUrl } from "./constants";
 import "./fonts.scss";
 
