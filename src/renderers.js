@@ -39,7 +39,7 @@ export const renderGraphic = data =>
 
     anchorEl.parentElement.insertBefore(mountEl, anchorEl);
     anchorEl.parentElement.removeChild(anchorEl);
-    console.log("props", props);
+
     if (props.preset) {
       if (props.preset === "hero") {
         render(
