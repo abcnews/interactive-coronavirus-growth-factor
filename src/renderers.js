@@ -57,7 +57,7 @@ export const renderGraphic = data =>
 
       const jurisdiction = props.jurisdiction
         ? jurisdictions[props.jurisdiction]
-        : "Australia";
+        : "australia";
 
       if (props.embed === "full" || props.embed === "right") {
         render(
