@@ -52,14 +52,14 @@ export const renderGraphic = data =>
     } else if (props.embed) {
       let jurisdictions = {};
       data.forEach((data, key) => {
-        jurisdictions[key.toLowerCase().replace(/\s/g, "")] = key;
+        jurisdictions[key.toLowerCase().replace(/[^a-z]/g, "")] = key;
       });
 
       const jurisdiction = props.jurisdiction
         ? jurisdictions[props.jurisdiction]
-        : "australia";
-
-      if (props.embed === "full" || props.embed === "right") {
+        : jurisdictions["australia"];
+      
+        if (props.embed === "full" || props.embed === "right") {
         render(
           <EmbedContainer embed={props.embed}>
             <Embed
