@@ -36,7 +36,7 @@ export const GrowthFactorChart = ({
       0,
       min(data, d => d.growthFactor)
     ),
-    Math.max(data[data.length - 1].growthFactor, 1.5)
+    Math.max(data[data.length - 1].growthFactor + 0.1, 1.2)
   ];
 
   const yRange = [height, height - innerHeight];

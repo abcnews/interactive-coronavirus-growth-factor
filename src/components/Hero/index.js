@@ -44,7 +44,6 @@ export const Hero = ({
       <GrowthFactorChart
         data={series.slice(-days)}
         innerHeight={innerHeight}
-        innerHeightDomain={defaultInnerHeightDomain}
         shimColor={colours.shim}
         latest={getAvgNewCases(data, smoothing)}
       />

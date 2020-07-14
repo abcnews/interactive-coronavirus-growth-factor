@@ -56,7 +56,6 @@ export const Embed = ({
         data={series.slice(-days)}
         height={+height}
         innerHeight={+innerheight}
-        innerHeightDomain={[0.9, 1.15]}
         shimColor={colours.embedShim}
         latest={getAvgNewCases(data, smoothing)}
       />
