@@ -74,38 +74,43 @@ const fetchAustralianData = () => {
     .then(
       mapMap((data, key, index) => {
         let incomplete = false;
-        const added = data.reduce((total, d) => {
+        const national = data.reduce((total, d) => {
           const added = d["New cases"];
           if (added === "") {
             incomplete = true;
           }
           return total + +added;
         }, 0);
-        return { incomplete, added };
+        return data
+          .map(d => {
+            const added = d["New cases"];
+            const incomplete = added === "";
+            return { incomplete, added, jurisdiction: d["State/territory"] };
+          })
+          .concat({ incomplete, added: national, jurisdiction: "Australia" });
       })
     )
     .then(auData => {
       const auDataArray = [];
+
       auData.forEach((added, key) => {
         const [d, m, y] = key.split("/").map(d => +d);
         const date = new Date(y, m - 1, d);
-        auDataArray.push({
-          added,
-          date,
-          jurisdiction: "Australia",
-          timestamp: date.getTime()
+        added.forEach(data => {
+          auDataArray.push({
+            ...data,
+            added: +data.added,
+            date,
+            timestamp: date.getTime()
+          });
         });
       });
-      return new Map([
-        [
-          "Australia",
-          auDataArray
-            .filter((d, i) => !d.added.incomplete || i > 0)
-            .map(d => ({ ...d, added: d.added.added }))
-            .reverse()
-        ]
-      ]);
+      return auDataArray;
     })
+    .then(groupByJurisdiction)
+    .then(
+      mapMap(data => data.filter((d, i) => !d.incomplete || i > 0).reverse())
+    )
     .catch(console.error);
 };
 

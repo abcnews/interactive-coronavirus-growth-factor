@@ -1,17 +1,4 @@
 import { pairs, ascending } from "d3-array";
-import { csvParse } from "d3-dsv";
-
-import {
-  dataUrl,
-  localAcquisitionDataUrl,
-  australianDataUrl
-} from "./constants";
-
-import {
-  fetchAustralianData,
-  fetchInternationalData,
-  fetchInfectionSourceData
-} from "./data";
 
 const sumReducer = (t, d) => t + d;
 
@@ -99,6 +86,14 @@ export const jurisdictionName = name => {
   const map = new Map();
   map.set("Korea, South", "South Korea");
   map.set("US", "United States");
+  map.set("NSW", "New South Wales");
+  map.set("QLD", "Queensland");
+  map.set("VIC", "Victoria");
+  map.set("ACT", "Australian Capital Territory");
+  map.set("SA", "South Australia");
+  map.set("WA", "Western Australia");
+  map.set("NT", "Northern Territory");
+  map.set("TAS", "Tasmania");
   return map.get(name) || name;
 };
 

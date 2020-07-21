@@ -79,6 +79,9 @@ export const presets = {
   },
   abbc: {
     jurisdictions: ["Belgium", "Canada", "Brazil", "Austria"]
+  },
+  states: {
+    jurisdictions: ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
   }
 };
 
