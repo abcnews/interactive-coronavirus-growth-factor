@@ -23,7 +23,7 @@ const selectors = ["growthfactorgraphicEMBED", "growthfactorgraphicPRESET"];
 export const renderGraphic = data =>
   [
     ...document.querySelectorAll(
-      selectors.map(s => `a[id^=${s}],a[name^=${s}]`).join(",")
+      selectors.map(s => `[id^=${s}],[name^=${s}]`).join(",")
     )
   ].map(anchorEl => {
     const props = a2o(
@@ -37,8 +37,12 @@ export const renderGraphic = data =>
       propName => (mountEl.dataset[propName] = props[propName])
     );
 
-    anchorEl.parentElement.insertBefore(mountEl, anchorEl);
-    anchorEl.parentElement.removeChild(anchorEl);
+    if (anchorEl.tagName === "DIV") {
+      anchorEl.appendChild(mountEl);
+    } else {
+      anchorEl.parentElement.insertBefore(mountEl, anchorEl);
+      anchorEl.parentElement.removeChild(anchorEl);
+    }
 
     if (props.preset) {
       if (props.preset === "hero") {
@@ -58,8 +62,8 @@ export const renderGraphic = data =>
       const jurisdiction = props.jurisdiction
         ? jurisdictions[props.jurisdiction]
         : jurisdictions["australia"];
-      
-        if (props.embed === "full" || props.embed === "right") {
+
+      if (props.embed === "full" || props.embed === "right") {
         render(
           <EmbedContainer embed={props.embed}>
             <Embed
