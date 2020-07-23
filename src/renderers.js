@@ -6,6 +6,11 @@ import { Hero } from "./components/Hero";
 import { Embed } from "./components/Embed";
 import { EmbedContainer } from "@abcnews/story-lab-component-library";
 import { storyUrl } from "./constants";
+import {
+  prefixedMountSelector,
+  getMountValue,
+  ensureBlockMount
+} from "@abcnews/mount-utils";
 import "./fonts.scss";
 
 export const domready = fn => {
@@ -18,53 +23,37 @@ export const whenOdysseyLoaded = new Promise(resolve =>
     : window.addEventListener("odyssey:api", () => resolve(window.__ODYSSEY__))
 );
 
-const selectors = ["growthfactorgraphicEMBED", "growthfactorgraphicPRESET"];
+export const renderGraphic = data => {
+  const jurisdictions = new Map();
+  data.forEach((data, key) => {
+    jurisdictions.set(key.toLowerCase().replace(/[^a-z]/g, ""), key);
+  });
 
-export const renderGraphic = data =>
-  [
-    ...document.querySelectorAll(
-      selectors.map(s => `[id^=${s}],[name^=${s}]`).join(",")
-    )
-  ].map(anchorEl => {
-    const props = a2o(
-      anchorEl.getAttribute("id") || anchorEl.getAttribute("name")
-    );
-    const mountEl = document.createElement("div");
-
-    mountEl.className = "u-pull";
-
-    Object.keys(props).forEach(
-      propName => (mountEl.dataset[propName] = props[propName])
-    );
-
-    if (anchorEl.tagName === "DIV") {
-      anchorEl.appendChild(mountEl);
-    } else {
-      anchorEl.parentElement.insertBefore(mountEl, anchorEl);
-      anchorEl.parentElement.removeChild(anchorEl);
-    }
-
-    if (props.preset) {
-      if (props.preset === "hero") {
-        render(
-          <Hero jurisdiction="Australia" data={data.get("Australia")} />,
-          mountEl
-        );
-      } else {
-        render(<SmallMultiples {...props} data={data} />, mountEl);
-      }
-    } else if (props.embed) {
-      let jurisdictions = {};
-      data.forEach((data, key) => {
-        jurisdictions[key.toLowerCase().replace(/[^a-z]/g, "")] = key;
-      });
+  [...document.querySelectorAll(prefixedMountSelector("growthfactorgraphic"))]
+    .map(ensureBlockMount)
+    .map(mountEl => {
+      const props = a2o(getMountValue(mountEl));
 
       const jurisdiction = props.jurisdiction
-        ? jurisdictions[props.jurisdiction]
-        : jurisdictions["australia"];
+        ? jurisdictions.get(props.jurisdiction)
+        : jurisdictions.get("australia");
 
-      if (props.embed === "full" || props.embed === "right") {
-        render(
+      // Render a hero graphic
+      if (props.preset && props.preset === "hero") {
+        return render(
+          <Hero jurisdiction={jurisdiction} data={data.get(jurisdiction)} />,
+          mountEl
+        );
+      }
+
+      // Render small multiples presets
+      if (props.preset) {
+        return render(<SmallMultiples {...props} data={data} />, mountEl);
+      }
+
+      // Render embeds
+      if (props.embed) {
+        return render(
           <EmbedContainer embed={props.embed}>
             <Embed
               {...props}
@@ -75,16 +64,6 @@ export const renderGraphic = data =>
           </EmbedContainer>,
           mountEl
         );
-      } else {
-        render(
-          <Embed
-            {...props}
-            jurisdiction={jurisdiction}
-            data={data.get(jurisdiction)}
-            link={props.link == false ? null : storyUrl}
-          />,
-          mountEl
-        );
       }
-    }
-  });
+    });
+};
