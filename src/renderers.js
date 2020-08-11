@@ -6,11 +6,7 @@ import { Hero } from "./components/Hero";
 import { Embed } from "./components/Embed";
 import { EmbedContainer } from "@abcnews/story-lab-component-library";
 import { storyUrl } from "./constants";
-import {
-  prefixedMountSelector,
-  getMountValue,
-  ensureBlockMount
-} from "@abcnews/mount-utils";
+import { getMountValue, selectMounts } from "@abcnews/mount-utils";
 import "./fonts.scss";
 
 export const domready = fn => {
@@ -29,41 +25,39 @@ export const renderGraphic = data => {
     jurisdictions.set(key.toLowerCase().replace(/[^a-z]/g, ""), key);
   });
 
-  [...document.querySelectorAll(prefixedMountSelector("growthfactorgraphic"))]
-    .map(ensureBlockMount)
-    .map(mountEl => {
-      const props = a2o(getMountValue(mountEl));
+  selectMounts("growthfactorgraphic").map(mountEl => {
+    const props = a2o(getMountValue(mountEl));
 
-      const jurisdiction = props.jurisdiction
-        ? jurisdictions.get(props.jurisdiction)
-        : jurisdictions.get("australia");
+    const jurisdiction = props.jurisdiction
+      ? jurisdictions.get(props.jurisdiction)
+      : jurisdictions.get("australia");
 
-      // Render a hero graphic
-      if (props.preset && props.preset === "hero") {
-        return render(
-          <Hero jurisdiction={jurisdiction} data={data.get(jurisdiction)} />,
-          mountEl
-        );
-      }
+    // Render a hero graphic
+    if (props.preset && props.preset === "hero") {
+      return render(
+        <Hero jurisdiction={jurisdiction} data={data.get(jurisdiction)} />,
+        mountEl
+      );
+    }
 
-      // Render small multiples presets
-      if (props.preset) {
-        return render(<SmallMultiples {...props} data={data} />, mountEl);
-      }
+    // Render small multiples presets
+    if (props.preset) {
+      return render(<SmallMultiples {...props} data={data} />, mountEl);
+    }
 
-      // Render embeds
-      if (props.embed) {
-        return render(
-          <EmbedContainer embed={props.embed}>
-            <Embed
-              {...props}
-              jurisdiction={jurisdiction}
-              data={data.get(jurisdiction)}
-              link={props.link == false ? null : storyUrl}
-            />
-          </EmbedContainer>,
-          mountEl
-        );
-      }
-    });
+    // Render embeds
+    if (props.embed) {
+      return render(
+        <EmbedContainer embed={props.embed}>
+          <Embed
+            {...props}
+            jurisdiction={jurisdiction}
+            data={data.get(jurisdiction)}
+            link={props.link == false ? null : storyUrl}
+          />
+        </EmbedContainer>,
+        mountEl
+      );
+    }
+  });
 };
