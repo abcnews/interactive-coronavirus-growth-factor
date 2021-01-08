@@ -42,6 +42,7 @@ export const renderGraphic = data => {
 
     // Render small multiples presets
     if (props.preset) {
+      mountEl.classList.add("u-pull");
       return render(<SmallMultiples {...props} data={data} />, mountEl);
     }
 

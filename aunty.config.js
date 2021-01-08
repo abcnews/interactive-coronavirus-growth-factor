@@ -1,12 +1,7 @@
 const { resolve } = require("path");
 module.exports = {
-  build: {
-    addModernJS: true
-  },
   webpack: config => {
-    config.entry["embed"] = [
-      config.entry.index[0].replace("index.js", "embed.js")
-    ];
+    config.entry["embed"] = [config.entry.index[0].replace("index", "embed")];
     config.devtool = "source-map";
 
     const rules = config.module.rules;
